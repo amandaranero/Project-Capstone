@@ -22,6 +22,7 @@ CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = b'\xd41\xac\x18\x17\xf7\xf2\x9bqr6=\x8d\x16\xbc\x1c'
 app.json.compact = False
 
 
@@ -69,30 +70,83 @@ def upload_file_to_s3(file):
 
 
 class Users(Resource):
-    def post(self):
-        data = request.form
-        imagedata = request.files['image']
-        print(data)
+    def get(self):
+        users = [users.to_dict() for users in User.query.all()]
         
+        return make_response(
+            users, 200
+        )
 
-        try:
+        if not users:
+            return make_response({
+                'error': 'users not found'
+            },400)
+
+    def post(self):
+        data = request.get_json()
+        email = data['email']
+        user = User.query.filter_by(email=email).first()
+        # session['user_id'] = user.id
+        print(session)
+
+        try: 
             new_user = User(
-               username = data['username'],
-               name = data['name'] ,
-               bio = data['bio']
+                name = data['name'],
+                email = data['email'],
+                username = data['username'],
+                sub = data['sub']
             )
-            print(new_user)
 
             db.session.add(new_user)
             db.session.commit()
-            imagedata.filename = get_unique_filename(imagedata.filename)
-            image = upload_file_to_s3(imagedata)
+
 
             photo = UserImage(
-                url =image['url'],
+                url = "https://cdn.create.vista.com/api/media/small/579502666/stock-vector-light-blue-outline-user-avatar",
                 user_id = new_user.id
             )
 
+            db.session.add(photo)
+            db.session.commit()
+
+            return make_response(
+                new_user.to_dict(),200
+            )
+        except:
+            return make_response(
+                {'error': 'did not post user'}, 401
+            )
+
+api.add_resource(Users, '/users')
+
+class UserById(Resource):
+
+    def patch(self, id):
+        user = User.query.filter_by(id=id).first()
+        photo = db.session.query(UserImage).filter(UserImage.user_id == id).first()
+        data = request.form
+        imagedata = request.files['image']
+        
+        if not user:
+            return make_response({
+                'error': 'user not found'
+            }, 404)
+        try:
+            for attr in data:
+                setattr(user, attr, data[attr])
+
+            db.session.add(user)
+            db.session.commit()
+
+            imagedata.filename = get_unique_filename(imagedata.filename)
+            image = upload_file_to_s3(imagedata)
+      
+            print(image)
+
+            for attr in image:
+                setattr(photo, attr, image[attr])
+
+            print(photo.url)
             db.session.add(photo)
             db.session.commit()
 
@@ -102,19 +156,20 @@ class Users(Resource):
             )
 
         except:
-            print({
+            return({
                 'errors':'nope'}, 401
             )
 
-api.add_resource(Users, '/users')
+api.add_resource(UserById, "/users/<int:id>")
 
-class Event(Resource):
+
+class Events(Resource):
+
     def post(self):
-
         data = request.form
         imagedata = request.files['image']
-        user_id = User.query.first()
-        # print(imagedata)
+        print(session['user_id'])
+        print(data)
 
         try:
             new_event = Event(
@@ -123,7 +178,7 @@ class Event(Resource):
                 date = data['date'],
                 time = data['time'],
                 event_type = data['event_type'],
-                user_id = 'user_id.id'
+                user_id = session['user_id']
             )
 
             print(new_event)
@@ -139,6 +194,7 @@ class Event(Resource):
                 event_id = new_event.id
             )
 
+            print(photo)
             db.session.add(photo)
             db.session.commit()
 
@@ -155,7 +211,7 @@ class Event(Resource):
 
 
 
-api.add_resource(Event, '/events')
+api.add_resource(Events, '/events')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

@@ -14,9 +14,11 @@ class User(db.Model, SerializerMixin):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String, nullable = False)
+    sub = db.Column(db.String, unique=True)
+    email = db.Column(db.String, unique=True)
+    username = db.Column(db.String)
     name = db.Column(db.String, nullable = False)
-    bio = db.Column(db.String, nullable = False)
+    bio = db.Column(db.String)
     created_at = db.Column(db.DateTime, server_default = db.func.now())
     updated_at = db.Column(db.DateTime, onupdate = db.func.now())
 
@@ -24,6 +26,7 @@ class User(db.Model, SerializerMixin):
     userimages = db.relationship('UserImage', backref= 'user', cascade = 'all, delete, delete-orphan')
 
     serialize_rules = ('-created_at','-updated_at' , '-events', '-userimages.user')
+
 
     # think will need messages
     # and followers.. should be relationship for both
@@ -45,10 +48,10 @@ class Event(db.Model, SerializerMixin):
     __tablename__ = "events"
 
     id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String, nullable = True)
-    description = db.Column(db.String, nullable = False)
-    date = (db.String)
-    time = (db.String)
+    name = db.Column(db.String)
+    description = db.Column(db.String)
+    date = db.Column(db.String)
+    time = db.Column(db.String)
     event_type = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_at = db.Column(db.DateTime, server_default = db.func.now())
@@ -57,7 +60,9 @@ class Event(db.Model, SerializerMixin):
     
     eventimages = db.relationship('EventImage', backref= 'event', cascade = 'all, delete, delete-orphan')
 
-    serialize_rules = ('-created_at','-updated_at', '-eventimages.event', '-users' )
+    serialize_rules = ('-created_at','-updated_at', '-eventimages.event', '-users')
+
+
     
 
 class EventImage(db.Model, SerializerMixin):

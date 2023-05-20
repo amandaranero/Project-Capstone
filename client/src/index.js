@@ -15,9 +15,7 @@ root.render(
       domain="dev-25w7agdwhg84ki1g.us.auth0.com"
       clientId="TJVpfRWiLNip9hWjrpGlAyoC1cpaKXvS"
       authorizationParams={{
-        redirect_uri: "http://localhost:4000",
-        audience: "https://dev-25w7agdwhg84ki1g.us.auth0.com/api/v2/",
-        scope: "read:current_user update:current_user_metadata"
+        redirect_uri: "http://localhost:4000/profile"
       }}
     >
         <App />

@@ -1,11 +1,23 @@
 import {useFormik} from 'formik'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import * as yup from 'yup'
+import { useAuth0 } from "@auth0/auth0-react";
 
-function UserForm(){
-    //  add loading to let user know that the image is loading
+function UserForm({users}){
     const [loading, setLoading] = useState(false)
+    const {user} = useAuth0();
+    
 
+        function findEmailID(useremail){
+            return useremail.email === user.email
+        }
+
+        const myEmail = users.find(useremail=> findEmailID(useremail))
+        console.log(myEmail)
+
+        const id = myEmail.id
+        console.log(id)
+    
 
     const formSchema = yup.object().shape({
         name: yup.string().required('Name is required'),
@@ -13,7 +25,6 @@ function UserForm(){
         bio: yup.string().required()
     })
 
-    //POST REQUEST
         const formik = useFormik({
             initialValues:{
                 name:'',
@@ -23,13 +34,14 @@ function UserForm(){
             }, 
             validationSchema: formSchema,
             onSubmit: async (values, helpers)=>{
+                console.log("submit")
                 const formData = new FormData()
                 for (let value in values){
                     formData.append(value, values[value]);
                 }
                 setLoading(true)
-                const resp = await fetch('/users', {
-                    method: 'POST',
+                const resp = await fetch(`/users/${id}`, {
+                    method: 'PATCH',
                     body: formData,
                 }) 
                 if (resp.ok){

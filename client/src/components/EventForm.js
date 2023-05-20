@@ -1,12 +1,14 @@
 import {useFormik} from 'formik'
 import * as yup from 'yup'
 import {useState} from 'react'
+import { useAuth0 } from "@auth0/auth0-react";
 
 
-function EventForm(){
+function EventForm({users}){
     const [loading, setLoading] = useState(false)
+    const { user} = useAuth0()
 
-
+  
 
     const formSchema = yup.object().shape({
         name: yup.string().required('Name is required'),
@@ -24,7 +26,7 @@ function EventForm(){
             date: '',
             time: '',
             event_type: '',
-            image: ''
+            image: '',
         },
         validationSchema: formSchema,
         onSubmit: async (values, helpers)=>{
@@ -86,8 +88,8 @@ function EventForm(){
                         onChange = {formik.handleChange}
                         onBlur = {formik.handleBlur}  
                         value= {formik.values.date}   
-                        /> {formik.touched.description && formik.errors.description ? (
-                            <div>{formik.errors.description}</div> ) :null}     
+                        /> {formik.touched.date && formik.errors.date ? (
+                            <div>{formik.errors.date}</div> ) :null}     
                 </div>
                 <div>
                     <label htmlFor = "time">Time</label>
@@ -98,8 +100,8 @@ function EventForm(){
                         onChange = {formik.handleChange}
                         onBlur = {formik.handleBlur}  
                         value= {formik.values.time}   
-                        /> {formik.touched.description && formik.errors.description ? (
-                            <div>{formik.errors.description}</div> ) :null}     
+                        /> {formik.touched.time && formik.errors.time ? (
+                            <div>{formik.errors.time}</div> ) :null}     
                 </div>
                 <div>
                     <label htmlFor='Event'>Event type</label>

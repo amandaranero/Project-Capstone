@@ -16,6 +16,7 @@ def make_user():
     for _ in range(10):
         user = User(
             username = fake.name(),
+            email = fake.email(),
             name = fake.name(),
             bio = fake.text()
         )
@@ -47,6 +48,7 @@ def make_userimages():
 
 def make_event():
     Event.query.delete()
+    users = db.session.query(User.id).all()
 
     events = []
 
@@ -54,9 +56,10 @@ def make_event():
         event = Event(
             name = fake.name(),
             description = fake.text(),
-            date = fake.future_date(),
-            time = fake.time(),
-            event_type = 'public'
+            date = fake.email(),
+            time = fake.name(),
+            event_type = 'public',
+            user_id = rc(users)[0],
         )
 
         events.append(event)
