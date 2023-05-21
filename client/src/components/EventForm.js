@@ -1,14 +1,33 @@
 import {useFormik} from 'formik'
 import * as yup from 'yup'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import { useAuth0 } from "@auth0/auth0-react";
+import CommentForm from './CommentForm'
 
 
 function EventForm({users}){
     const [loading, setLoading] = useState(false)
+    const [events, setEvents] = useState([])
+    const [event, setEvent] = useState({})
     const { user} = useAuth0()
 
-  
+    
+
+    useEffect(()=>{
+        fetch('/events')
+        .then((resp)=>{
+            if (resp.ok){
+                resp.json()
+                .then((eventData)=>{
+                setEvents(eventData)
+            })
+            } else{
+                console.log('error')
+            }
+        })
+    },[])
+
+    console.log(events)
 
     const formSchema = yup.object().shape({
         name: yup.string().required('Name is required'),
@@ -40,9 +59,11 @@ function EventForm({users}){
                 body: formData,
             })
             if (resp.ok){
-                const postData = await resp.json()
+                const eventData = await resp.json()
                 setLoading(false)
-                console.log('yes', postData)
+                console.log('yes', eventData)
+                setEvents([...events, eventData])
+                setEvent(eventData)
                 helpers.resetForm() 
             } else{
                 setLoading(false)
@@ -50,6 +71,7 @@ function EventForm({users}){
             }
         }
     })
+    console.log(event)
     
 
     return(
@@ -132,7 +154,7 @@ function EventForm({users}){
                         <button type='submit'>Submit</button>  
                 </div>
             </form>
-
+        <CommentForm events = {events} />
         </div>
     )
     }

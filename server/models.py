@@ -24,8 +24,9 @@ class User(db.Model, SerializerMixin):
 
     events = db.relationship('Event', backref= 'event', cascade = 'all, delete, delete-orphan')
     userimages = db.relationship('UserImage', backref= 'user', cascade = 'all, delete, delete-orphan')
+    comments = db.relationship('Comment', backref='user', cascade='all, delete, delete-orphan')
 
-    serialize_rules = ('-created_at','-updated_at' , '-events', '-userimages.user')
+    serialize_rules = ('-created_at','-updated_at' , '-events', '-userimages.user', '-comments')
 
 
     # think will need messages
@@ -59,11 +60,10 @@ class Event(db.Model, SerializerMixin):
     # will need likes and comments
     
     eventimages = db.relationship('EventImage', backref= 'event', cascade = 'all, delete, delete-orphan')
+    comments = db.relationship('Comment', backref='event', cascade='all, delete, delete-orphan')
 
-    serialize_rules = ('-created_at','-updated_at', '-eventimages.event', '-users')
+    serialize_rules = ('-created_at','-updated_at', '-eventimages.event', '-users', '-comments')
 
-
-    
 
 class EventImage(db.Model, SerializerMixin):
     __tablename__="eventimages"
@@ -75,6 +75,20 @@ class EventImage(db.Model, SerializerMixin):
     updated_at = db.Column(db.DateTime, onupdate = db.func.now())
 
     serialize_rules = ('-created_at','-updated_at' )
+
+class Comment(db.Model, SerializerMixin):
+    __tablename__ = "comments"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
+    created_at = db.Column(db.DateTime, server_default = db.func.now())
+    updated_at = db.Column(db.DateTime, onupdate = db.func.now())
+
+    serialize_rules = ('-updated_at' )
+
+
 
 
 

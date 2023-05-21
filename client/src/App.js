@@ -8,6 +8,7 @@ import ProfilePage from './components/ProfilePage';
 import EventForm from './components/EventForm';
 import LogoutButton from './components/Logout';
 import Home from './components/Home'
+import CommentForm from './components/CommentForm';
 
 
 
@@ -43,6 +44,7 @@ function App() {
       {/* <Profile/> */}
       <Routes>
         <Route path = "/" element = {<Home/>}/>
+        <Route path ="/commentform" element = {<CommentForm/>}/>
         <Route path = "/userform" element={<UserForm users={users}/>}/>
         <Route path = "/eventform" element={<EventForm users={users}/>}/>
         <Route path = "/profile" element={<ProfilePage/>}/>

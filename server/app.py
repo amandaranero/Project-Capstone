@@ -1,7 +1,7 @@
 from flask import Flask, make_response, request, session, render_template
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
-from models import db, User, Event, UserImage, EventImage
+from models import db, User, Event, UserImage, EventImage, Comment
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import boto3
@@ -86,7 +86,7 @@ class Users(Resource):
         data = request.get_json()
         email = data['email']
         user = User.query.filter_by(email=email).first()
-        # session['user_id'] = user.id
+        session['user_id'] = user.id
         print(session)
 
         try: 
@@ -165,6 +165,19 @@ api.add_resource(UserById, "/users/<int:id>")
 
 class Events(Resource):
 
+    def get(self):
+        events = [events.to_dict() for events in Event.query.all()]
+
+        return make_response(
+            events,
+            200
+        )
+
+        if not events:
+            return make_response({
+                'error': 'no events found'
+            }, 400)
+
     def post(self):
         data = request.form
         imagedata = request.files['image']
@@ -188,13 +201,14 @@ class Events(Resource):
 
             imagedata.filename = get_unique_filename(imagedata.filename)
             image = upload_file_to_s3(imagedata)
+            print(image)
 
             photo = EventImage(
                 url = image['url'],
                 event_id = new_event.id
             )
 
-            print(photo)
+            
             db.session.add(photo)
             db.session.commit()
 
@@ -212,6 +226,35 @@ class Events(Resource):
 
 
 api.add_resource(Events, '/events')
+
+class Comments(Resource):
+    
+    def post(self):
+        data = request.get_json()
+        print(session['user_id'])
+
+        # try:
+        new_comment = Comment(
+            content = data['content'],
+            user_id = session['user_id'],
+            event_id = data['event_id']
+        )
+        
+        db.session.add(new_comment)
+        db.session.commit()
+
+        return make_response(
+            new_comment.to_dict(),
+            200
+        )
+
+        # except:
+        #     return make_response(
+        #         {'error': 'could not post comment'},
+        #         401
+        #     )
+
+api.add_resource(Comments, '/comments')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
