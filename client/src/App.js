@@ -9,12 +9,24 @@ import EventForm from './components/EventForm';
 import LogoutButton from './components/Logout';
 import Home from './components/Home'
 import CommentForm from './components/CommentForm';
+import Users from './components/Users';
+import User from './components/User'
+import Followers from './components/Followers';
 
 
 
 function App() {
-
+  const [followers, setFollowers] = useState([])
   const [users, setUsers] = useState([])
+
+
+  useEffect(()=>{
+    fetch('/follow')
+    .then((resp)=>resp.json())
+    .then((follows)=> setFollowers(follows))
+}, [])
+
+  console.log(followers)
 
   useEffect(()=>{
     fetch('/users')
@@ -29,11 +41,8 @@ function App() {
       }
     })
   }, [])
-
+  
   console.log(users)
-
-
-
 
 
 
@@ -41,13 +50,17 @@ function App() {
     <div className="App">
       <LoginButton users={users}/>
       <LogoutButton/>
+      
       {/* <Profile/> */}
       <Routes>
+        <Route path ="/users/:id" element={<User/>}/>
+        <Route path="/users" element={<Users users={users}/>}/>
         <Route path = "/" element = {<Home/>}/>
         <Route path ="/commentform" element = {<CommentForm/>}/>
         <Route path = "/userform" element={<UserForm users={users}/>}/>
         <Route path = "/eventform" element={<EventForm users={users}/>}/>
         <Route path = "/profile" element={<ProfilePage/>}/>
+        <Route path ='/followers' element={<Followers followers={followers}/>}/>
       </Routes> 
     </div>
   );

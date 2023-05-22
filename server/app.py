@@ -69,6 +69,26 @@ def upload_file_to_s3(file):
     return {"url": f"{S3_LOCATION}{file.filename}"}
 
 
+class Logout(Resource):
+    def delete(self):
+        if session.get('user_id'):
+            session['user_id'] = None
+            print(session['user_id'])
+
+            return make_response({
+                'message': 'No User logged in'
+                }, 204)
+
+        elif session.get('agency_id'):
+            session['agency_id'] = None
+
+            return make_response({
+                'message': 'No User logged in'
+                }, 204)
+
+api.add_resource(Logout, '/logout')
+
+
 class Users(Resource):
     def get(self):
         users = [users.to_dict() for users in User.query.all()]
@@ -86,40 +106,60 @@ class Users(Resource):
         data = request.get_json()
         email = data['email']
         user = User.query.filter_by(email=email).first()
-        session['user_id'] = user.id
-        print(session)
+        print(user)
 
-        try: 
-            new_user = User(
-                name = data['name'],
-                email = data['email'],
-                username = data['username'],
-                sub = data['sub']
-            )
+        if user:
+            session['user_id'] = user.id
+            print(session['user_id'])
+        else:
+            try: 
+                new_user = User(
+                    name = data['name'],
+                    email = data['email'],
+                    username = data['username'],
+                    sub = data['sub']
+                )
 
-            db.session.add(new_user)
-            db.session.commit()
+                db.session.add(new_user)
+                db.session.commit()
+
+                
+                print(session['user_id'])
 
 
-            photo = UserImage(
-                url = "https://cdn.create.vista.com/api/media/small/579502666/stock-vector-light-blue-outline-user-avatar",
-                user_id = new_user.id
-            )
+                photo = UserImage(
+                    url = "https://cdn.create.vista.com/api/media/small/579502666/stock-vector-light-blue-outline-user-avatar",
+                    user_id = new_user.id
+                )
 
-            db.session.add(photo)
-            db.session.commit()
+                db.session.add(photo)
+                db.session.commit()
+                
 
-            return make_response(
-                new_user.to_dict(),200
-            )
-        except:
-            return make_response(
-                {'error': 'did not post user'}, 401
-            )
+                return make_response(
+                    new_user.to_dict(),200
+                )
+
+            except:
+                return make_response(
+                    {'error': 'did not post user'}, 401
+                )
 
 api.add_resource(Users, '/users')
 
+
 class UserById(Resource):
+    def get(self, id):
+        user = User.query.filter_by(id=id).first()
+        
+        if not user:
+            return make_response(
+               { "error": "no user found"}
+            )
+        else:
+            return make_response(
+                user.to_dict(), 200
+            )
 
     def patch(self, id):
         user = User.query.filter_by(id=id).first()
@@ -140,18 +180,19 @@ class UserById(Resource):
 
             imagedata.filename = get_unique_filename(imagedata.filename)
             image = upload_file_to_s3(imagedata)
-      
-            print(image)
+
+            print(photo)
 
             for attr in image:
                 setattr(photo, attr, image[attr])
 
-            print(photo.url)
+            print(photo)
+
             db.session.add(photo)
             db.session.commit()
 
             return make_response(
-                new_user.to_dict(),
+                user.to_dict(),
                 200
             )
 
@@ -181,7 +222,6 @@ class Events(Resource):
     def post(self):
         data = request.form
         imagedata = request.files['image']
-        print(session['user_id'])
         print(data)
 
         try:
@@ -218,6 +258,7 @@ class Events(Resource):
             )
 
         except:
+            user_id = session['user_id']
             return make_response(
                 {'errors': 'nope'},
                 401
@@ -233,28 +274,70 @@ class Comments(Resource):
         data = request.get_json()
         print(session['user_id'])
 
-        # try:
-        new_comment = Comment(
-            content = data['content'],
-            user_id = session['user_id'],
-            event_id = data['event_id']
-        )
-        
-        db.session.add(new_comment)
-        db.session.commit()
+        try:
+            new_comment = Comment(
+                content = data['content'],
+                user_id = session['user_id'],
+                event_id = data['event_id']
+            )
+            
+            db.session.add(new_comment)
+            db.session.commit()
 
-        return make_response(
-            new_comment.to_dict(),
-            200
+            return make_response(
+                new_comment.to_dict(),
+                200
         )
 
-        # except:
-        #     return make_response(
-        #         {'error': 'could not post comment'},
-        #         401
-        #     )
+        except:
+            return make_response(
+                {'error': 'could not post comment'},
+                401
+            )
 
 api.add_resource(Comments, '/comments')
+
+
+class Follow(Resource):
+    def get(self):
+        user = User.query.filter_by(id=session['user_id']).first()
+
+        print(type(user.followers))
+
+        following = [follow.username for follow in user.followers]
+
+        # follower = User.query.filter_by()
+
+        # print(following)
+
+        return make_response(
+            following, 200
+        )
+
+
+    def post(self):
+        data = request.get_json()
+        follower = User.query.filter_by(id=data).first()
+        user = User.query.filter_by(id=session['user_id']).first()
+        
+
+        if not follower:
+            return make_response({
+                'error':'follower does not exist'
+            }, 400)
+
+        
+        
+        user.followers.append(follower)
+        db.session.commit()
+
+        print(user.followers)
+
+        return make_response(
+            follower.to_dict(only=('username', 'id')), 201
+        )
+
+api.add_resource(Follow, '/follow')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

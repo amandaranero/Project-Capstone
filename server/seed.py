@@ -1,6 +1,6 @@
 from faker import Faker
 from app import app
-from models import db, User, UserImage, Event, EventImage, Comment
+from models import db, User, UserImage, Event, EventImage, Comment, follower
 from random import choice as rc, randint
 from app import app
 from sqlalchemy.orm import sessionmaker
@@ -10,6 +10,7 @@ fake = Faker()
 
 def make_user():
     User.query.delete()
+    
 
     users = []
 
@@ -20,8 +21,11 @@ def make_user():
             name = fake.name(),
             bio = fake.text()
         )
-
         users.append(user)
+
+        for user in users:
+            for _ in range(3):
+                user.followers.append(rc(users))
 
     db.session.add_all(users)
     db.session.commit()
@@ -32,12 +36,9 @@ def make_userimages():
 
     images = []
 
-    pic = ["https://images.dog.ceo/breeds/deerhound-scottish/n02092002_6915.jpg",
-    'https://cdn.akc.org/content/hero/puppy_pictures_header.jpg', "https://images.dog.ceo/breeds/setter-irish/n02100877_2142.jpg","https://images.dog.ceo/breeds/hound-basset/n02088238_13683.jpg", "https://images.dog.ceo/breeds/corgi-cardigan/n02113186_1447.jpg",  "https://images.dog.ceo/breeds/airedale/n02096051_183.jpg", "https://images.dog.ceo/breeds/poodle-toy/n02113624_7964.jpg", "https://images.dog.ceo/breeds/terrier-silky/n02097658_6351.jpg", "https://images.dog.ceo/breeds/greyhound-italian/n02091032_4653.jpg"]
-
     for _ in range(10):
         image = UserImage(
-            url = rc(pic),
+            url = "https://cdn.create.vista.com/api/media/small/579502666/stock-vector-light-blue-outline-user-avatar",
             user_id = rc(users)[0]
         )
 
@@ -108,6 +109,26 @@ def make_comment():
         db.session.commit()
 
 
+
+
+# def make_message():
+#     users = db.session.query(User.id).all()
+
+#     messages = []
+
+#     for _ in range(10):
+#         message = Message(
+#             content = fake.text(),
+#             user_id = rc(users)[0],
+#             messaged_id = rc(users)[0]
+#         )
+
+#         messages.append(message)
+
+#         db.session.add_all(messages)
+#         db.session.commit()
+
+
 if __name__ == '__main__':
     with app.app_context():
         make_user()
@@ -115,3 +136,4 @@ if __name__ == '__main__':
         make_event()
         make_eventimages()
         make_comment()
+        # make_message()

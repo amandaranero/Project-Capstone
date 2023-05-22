@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 const LoginButton = ({users}) => {
   const {user, loginWithRedirect, getAccessTokenSilently, isAuthenticated} = useAuth0();
 
-  console.log(user)
   const navigate = useNavigate()
 
   function checkUsers(){
     if (isAuthenticated){
       navigate('/profile')
     }}
+
 
 //NEED TO REDIRECT TO USERFORM IF NEW. 
 //NOT WORKING WHERE I WANT IT TO...
@@ -68,7 +68,7 @@ const LoginButton = ({users}) => {
   },[getAccessTokenSilently])
 
   return ( 
-   <button onClick={() => loginWithRedirect()}>Log In</button>
+   <button onClick={()=> loginWithRedirect()}>Log In</button>
   )
 };
 //fetch request my front end

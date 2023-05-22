@@ -1,8 +1,8 @@
-"""create tables
+"""recreate tables
 
-Revision ID: 47e0269a3f40
+Revision ID: 03735597d027
 Revises: 
-Create Date: 2023-05-20 20:03:42.843670
+Create Date: 2023-05-22 16:50:08.329608
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '47e0269a3f40'
+revision = '03735597d027'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -28,8 +28,7 @@ def upgrade():
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email'),
-    sa.UniqueConstraint('sub')
+    sa.UniqueConstraint('email')
     )
     op.create_table('events',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -43,6 +42,12 @@ def upgrade():
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_events_user_id_users')),
     sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('followers',
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('follower_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['follower_id'], ['users.id'], name=op.f('fk_followers_follower_id_users')),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_followers_user_id_users'))
     )
     op.create_table('userimages',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -81,6 +86,7 @@ def downgrade():
     op.drop_table('eventimages')
     op.drop_table('comments')
     op.drop_table('userimages')
+    op.drop_table('followers')
     op.drop_table('events')
     op.drop_table('users')
     # ### end Alembic commands ###

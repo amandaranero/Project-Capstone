@@ -10,11 +10,20 @@ metadata = MetaData(naming_convention={
 
 db = SQLAlchemy(metadata=metadata)
 
+# follower joint and secondary table
+
+follower = db.Table(
+    'followers',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('follower_id', db.Integer, db.ForeignKey('users.id'))
+)
+
+
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key = True)
-    sub = db.Column(db.String, unique=True)
+    sub = db.Column(db.String)
     email = db.Column(db.String, unique=True)
     username = db.Column(db.String)
     name = db.Column(db.String, nullable = False)
@@ -25,8 +34,18 @@ class User(db.Model, SerializerMixin):
     events = db.relationship('Event', backref= 'event', cascade = 'all, delete, delete-orphan')
     userimages = db.relationship('UserImage', backref= 'user', cascade = 'all, delete, delete-orphan')
     comments = db.relationship('Comment', backref='user', cascade='all, delete, delete-orphan')
+    # messages = db.relationship('Message', backref='user', cascade='all, delete, delete-orphan')
 
-    serialize_rules = ('-created_at','-updated_at' , '-events', '-userimages.user', '-comments')
+
+    # followers relationships
+
+    followers = db.relationship('User', 
+                                secondary = follower, 
+                                primaryjoin = (follower.c.user_id == id),
+                                secondaryjoin = (follower.c.follower_id == id)
+                                )
+
+    serialize_rules = ('-created_at','-updated_at' , '-events', '-userimages.user', '-comments', '-followers')
 
 
     # think will need messages
@@ -87,6 +106,18 @@ class Comment(db.Model, SerializerMixin):
     updated_at = db.Column(db.DateTime, onupdate = db.func.now())
 
     serialize_rules = ('-updated_at' )
+
+# class Message(db.Model, SerializerMixin):
+#     __tablename__ = "messages"
+
+#     id = db.Column(db.Integer, primary_key=True)
+#     content = db.Column(db.String)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+#     messaged_id = db.Column(db.Integer)
+#     created_at = db.Column(db.DateTime, server_default = db.func.now())
+#     updated_at = db.Column(db.DateTime, onupdate = db.func.now())
+
+
 
 
 

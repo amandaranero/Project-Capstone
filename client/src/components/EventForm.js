@@ -27,7 +27,6 @@ function EventForm({users}){
         })
     },[])
 
-    console.log(events)
 
     const formSchema = yup.object().shape({
         name: yup.string().required('Name is required'),
@@ -61,7 +60,6 @@ function EventForm({users}){
             if (resp.ok){
                 const eventData = await resp.json()
                 setLoading(false)
-                console.log('yes', eventData)
                 setEvents([...events, eventData])
                 setEvent(eventData)
                 helpers.resetForm() 
@@ -71,7 +69,7 @@ function EventForm({users}){
             }
         }
     })
-    console.log(event)
+
     
 
     return(
