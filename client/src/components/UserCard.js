@@ -1,14 +1,16 @@
 import {useState, useEffect} from 'react'
 import '../componentcss/UserCard.css'
-import {Link} from 'react-router-dom'
+import {Link, useParams} from 'react-router-dom'
 import User from './User'
 // style will change
 
 function UserCard({user}){
-    const {name, username, userimages, bio, id}= user
+    console.log(user)
+    const {name, id, bio, username, userimages} = user
     const [userImages, setUserImages] = useState([])
     const [following, setFollowing] = useState([])
     const [follow, setFollow] = useState({})
+
 
     useEffect(()=>{
         const images = userimages.map((image)=>{
@@ -18,8 +20,8 @@ function UserCard({user}){
     }, [])
 
     function handleFollower(){
+        console.log("hello")
         console.log(id)
-        console.log("click")
         fetch('/follow', {
             method: 'POST',
             headers:{
@@ -28,7 +30,8 @@ function UserCard({user}){
             body:JSON.stringify(id)
         }).then((resp)=> resp.json())
         .then((follower)=> {
-            setFollowing(following.concat(follower))
+            console.log(follower)
+            setFollowing([...following, follower])
             setFollow(follower)
         })
     }
@@ -37,7 +40,7 @@ function UserCard({user}){
 
     return(
         <div>
-        <User key={user.id} user={user}/>
+            <h2>hi</h2>
         <div className = 'card'>
             <Link to ={`/users/${id}`}>
                 <img className='img' src={userImages[0] ? userImages[0].url : null} alt={`${name}’s photo`} />
@@ -48,10 +51,10 @@ function UserCard({user}){
             <div className = 'info'>
                 <span> Username: {username}</span>
             </div>
-            <div>
+        </div> 
+        <div>
                 <button onClick={handleFollower}>Follow</button>
             </div>
-        </div>
         </div>
     )
 }

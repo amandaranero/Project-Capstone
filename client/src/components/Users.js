@@ -8,6 +8,8 @@ import UserCard from "./UserCard"
 
 function Users({users}){
 
+    console.log(users)
+
     const userCards = users.map((user)=>(
         <UserCard key={user.id} user={user} />
     ))

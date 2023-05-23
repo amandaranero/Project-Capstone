@@ -73,7 +73,6 @@ class Logout(Resource):
     def delete(self):
         if session.get('user_id'):
             session['user_id'] = None
-            print(session['user_id'])
 
             return make_response({
                 'message': 'No User logged in'
@@ -106,11 +105,9 @@ class Users(Resource):
         data = request.get_json()
         email = data['email']
         user = User.query.filter_by(email=email).first()
-        print(user)
 
         if user:
             session['user_id'] = user.id
-            print(session['user_id'])
         else:
             try: 
                 new_user = User(
@@ -122,9 +119,6 @@ class Users(Resource):
 
                 db.session.add(new_user)
                 db.session.commit()
-
-                
-                print(session['user_id'])
 
 
                 photo = UserImage(
@@ -181,12 +175,10 @@ class UserById(Resource):
             imagedata.filename = get_unique_filename(imagedata.filename)
             image = upload_file_to_s3(imagedata)
 
-            print(photo)
-
+            print(image)
+            
             for attr in image:
                 setattr(photo, attr, image[attr])
-
-            print(photo)
 
             db.session.add(photo)
             db.session.commit()
@@ -222,7 +214,6 @@ class Events(Resource):
     def post(self):
         data = request.form
         imagedata = request.files['image']
-        print(data)
 
         try:
             new_event = Event(
@@ -233,8 +224,6 @@ class Events(Resource):
                 event_type = data['event_type'],
                 user_id = session['user_id']
             )
-
-            print(new_event)
 
             db.session.add(new_event)
             db.session.commit()
@@ -272,7 +261,6 @@ class Comments(Resource):
     
     def post(self):
         data = request.get_json()
-        print(session['user_id'])
 
         try:
             new_comment = Comment(
@@ -302,13 +290,9 @@ class Follow(Resource):
     def get(self):
         user = User.query.filter_by(id=session['user_id']).first()
 
-        print(type(user.followers))
-
         following = [follow.username for follow in user.followers]
 
-        # follower = User.query.filter_by()
-
-        # print(following)
+        print(following)
 
         return make_response(
             following, 200
@@ -317,27 +301,41 @@ class Follow(Resource):
 
     def post(self):
         data = request.get_json()
-        follower = User.query.filter_by(id=data).first()
+        following = User.query.filter_by(id=data).first()
+        # followers_id = follower
         user = User.query.filter_by(id=session['user_id']).first()
         
 
-        if not follower:
+        if not following:
             return make_response({
                 'error':'follower does not exist'
             }, 400)
 
-        
-        
-        user.followers.append(follower)
+        user.followers.append(following)
+        print(following)
         db.session.commit()
 
-        print(user.followers)
 
         return make_response(
-            follower.to_dict(only=('username', 'id')), 201
+            following.to_dict(only=('username', 'id')), 201
         )
 
 api.add_resource(Follow, '/follow')
+
+class Followed(Resource):
+    def get(self):
+        user = User.query.filter_by(id=session['user_id']).first()
+
+        followers = [follow.username for follow in user.following]
+
+        print(followers)
+
+        return make_response(
+            followers, 200
+        )
+
+api.add_resource(Followed, '/followers')
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

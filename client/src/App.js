@@ -11,22 +11,33 @@ import Home from './components/Home'
 import CommentForm from './components/CommentForm';
 import Users from './components/Users';
 import User from './components/User'
+import Following from './components/Following';
 import Followers from './components/Followers';
 
 
 
-function App() {
-  const [followers, setFollowers] = useState([])
-  const [users, setUsers] = useState([])
 
+function App() {
+  const [following, setFollowing] = useState([])
+  const [users, setUsers] = useState([])
+  const [followers, setFollowers] = useState([])
+
+
+  useEffect(()=>{
+    fetch('/followers')
+    .then((resp)=>resp.json())
+    .then((followData)=> setFollowers(followData))
+  }, [])
+
+  console.log(followers)
 
   useEffect(()=>{
     fetch('/follow')
     .then((resp)=>resp.json())
-    .then((follows)=> setFollowers(follows))
+    .then((follows)=> setFollowing(follows))
 }, [])
 
-  console.log(followers)
+  
 
   useEffect(()=>{
     fetch('/users')
@@ -60,6 +71,7 @@ function App() {
         <Route path = "/userform" element={<UserForm users={users}/>}/>
         <Route path = "/eventform" element={<EventForm users={users}/>}/>
         <Route path = "/profile" element={<ProfilePage/>}/>
+        <Route path ='/following' element={<Following following={following}/>}/>
         <Route path ='/followers' element={<Followers followers={followers}/>}/>
       </Routes> 
     </div>
