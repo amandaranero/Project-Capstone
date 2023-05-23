@@ -47,7 +47,7 @@ class User(db.Model, SerializerMixin):
                                 backref = 'following'
                                 )
 
-    serialize_rules = ('-created_at','-updated_at' , '-events', '-userimages.user', '-comments', '-following', '-follow', '-followers', '-messages_sent')
+    serialize_rules = ('-created_at','-updated_at' , '-events', '-userimages.user', '-comments', '-following', '-follow', '-followers', '-messages_sent', '-messages_recieved', '-messages')
 
 
     # think will need messages
@@ -119,6 +119,8 @@ class Message(db.Model, SerializerMixin):
     message_read = db.Column(db.Boolean, default = False)
     created_at = db.Column(db.DateTime, server_default = db.func.now())
     updated_at = db.Column(db.DateTime, onupdate = db.func.now())
+
+
 
 
 

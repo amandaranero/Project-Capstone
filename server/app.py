@@ -1,7 +1,7 @@
 from flask import Flask, make_response, request, session, render_template
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
-from models import db, User, Event, UserImage, EventImage, Comment
+from models import db, User, Event, UserImage, EventImage, Comment, Message
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import boto3
@@ -336,6 +336,63 @@ class Followed(Resource):
 
 api.add_resource(Followed, '/followers')
 
+class Messages(Resource):
+    def post(self):
+        data = request.get_json()
+
+        new_message=Message(
+            content= data['content'],
+            reciever_id= data['reciever_id'],
+            sender_id= session['user_id']
+        )
+
+        db.session.add(new_message)
+        db.session.commit()
+
+        recmess = new_message.message_reciever.to_dict()
+        sendmess = new_message.message_sender.to_dict()
+        content = new_message.content
+
+        reciever_username = recmess['username']
+        sender_username = sendmess['username']
+
+        sent_message=[(
+            content,
+            reciever_username,
+            sender_username
+        )]
+
+        print(sent_message)
+
+        return make_response(
+            sent_message, 201
+        )
+
+
+api.add_resource(Messages, '/messages')
+
+class MessagesById(Resource):
+    def get(self,id):
+       messages_sender = Message.query.filter_by(sender_id=session['user_id']).all()
+       message_sender_id = [messages.id for messages in messages_sender]
+
+       message_reciever = Message.query.filter_by(reciever_id = id).all()
+       message_reciever_id = [messages.id for messages in message_reciever]
+
+       one_and_two = set(message_sender_id) & set(message_reciever_id)
+       one_and_two_list = list(one_and_two)
+
+       result = db.session.query(Message).filter(Message.id.in_(one_and_two))
+       message_content = [message.content for message in result]
+       print(message_content)
+
+       return make_response(
+        message_content, 200
+       )
+
+
+    
+api.add_resource(MessagesById, '/messages/<int:id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

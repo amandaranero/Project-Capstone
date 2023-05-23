@@ -1,6 +1,6 @@
 from faker import Faker
 from app import app
-from models import db, User, UserImage, Event, EventImage, Comment, follow
+from models import db, User, UserImage, Event, EventImage, Comment, follow, Message
 from random import choice as rc, randint
 from app import app
 from sqlalchemy.orm import sessionmaker

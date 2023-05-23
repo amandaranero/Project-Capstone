@@ -13,6 +13,7 @@ import Users from './components/Users';
 import User from './components/User'
 import Following from './components/Following';
 import Followers from './components/Followers';
+import Messages from './components/Messages'
 
 
 
@@ -73,6 +74,7 @@ function App() {
         <Route path = "/profile" element={<ProfilePage/>}/>
         <Route path ='/following' element={<Following following={following}/>}/>
         <Route path ='/followers' element={<Followers followers={followers}/>}/>
+        <Route path ='/messages/:id' element={<Messages/>}/>
       </Routes> 
     </div>
   );

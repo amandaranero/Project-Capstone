@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import '../componentcss/UserCard.css'
-import { useParams } from 'react-router-dom'
+import { Navigate, useParams, Link } from 'react-router-dom'
+import MessageForm from './MessageForm'
+// import Messages from './Messages'
 
 
 function User(){
@@ -8,10 +10,26 @@ function User(){
     const [following, setFollowing] = useState([])
     const [follow, setFollow] = useState({})
     const {name, username, userimages, bio}= userProfile
-
-    console.log(name)
+    const [messages, setMessages] = useState([])
 
     let {id} = useParams()
+
+    console.log(id)
+    
+    
+    useEffect(()=>{
+        fetch(`/messages/${id}`)
+        .then((resp)=>{
+            if(resp.ok){
+                resp.json()
+                .then((messages)=>{
+                    setMessages(messages)
+                })
+            }
+        })
+    }, [])
+    
+
 
 
     useEffect(()=>{
@@ -21,13 +39,15 @@ function User(){
     }, [])
 
 
-
-
     console.log(userProfile)
+
+    function handleMessage(){
+        console.log(id)
+    }
 
 
     function handleFollower(){
-        console.log(id)
+
         fetch('/follow', {
             method: 'POST',
             headers:{
@@ -64,9 +84,11 @@ function User(){
                 <button onClick={handleFollower}>Follow</button>
             </div>
             <div>
-                <button>Message</button>
+                <button onClick={handleMessage}>Message</button>
             </div>
     )
+        <MessageForm id={id}/>
+        {messages}
         </div>
     )
 }
