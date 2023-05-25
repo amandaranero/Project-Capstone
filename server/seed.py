@@ -1,6 +1,6 @@
 from faker import Faker
 from app import app
-from models import db, User, UserImage, Event, EventImage, Comment, follow, Message
+from models import db, User, UserImage, Event, EventImage, Comment, follow, Message, Like
 from random import choice as rc, randint
 from app import app
 from sqlalchemy.orm import sessionmaker
@@ -91,6 +91,8 @@ def make_eventimages():
         db.session.commit()
 
 def make_comment():
+    Comment.query.delete()
+
     users = db.session.query(User.id).all()
     events = db.session.query(Event.id).all()
 
@@ -130,6 +132,30 @@ def make_message():
         db.session.commit()
 
 
+def make_likes():
+    Like.query.delete()
+    
+    users = db.session.query(User.id).all()
+    events = db.session.query(Event.id).all()
+
+    numbers = [1,2,3,4,5,6,7,8,9,10]
+
+    likes = []
+
+
+    for _ in range(10):
+        like = Like(
+            user_id = rc(users)[0],
+            event_id =rc(events)[0]
+        )
+
+    likes.append(like)
+
+    db.session.add_all(likes)
+    db.session.commit()
+
+
+
 if __name__ == '__main__':
     with app.app_context():
         make_user()
@@ -138,3 +164,4 @@ if __name__ == '__main__':
         make_eventimages()
         make_comment()
         make_message()
+        make_likes()

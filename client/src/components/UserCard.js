@@ -30,13 +30,10 @@ function UserCard({user}){
             body:JSON.stringify(id)
         }).then((resp)=> resp.json())
         .then((follower)=> {
-            console.log(follower)
             setFollowing([...following, follower])
             setFollow(follower)
         })
     }
-
-    console.log(following)
 
     return(
         <div>

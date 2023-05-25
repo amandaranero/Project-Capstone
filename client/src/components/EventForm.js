@@ -2,7 +2,6 @@ import {useFormik} from 'formik'
 import * as yup from 'yup'
 import {useEffect, useState} from 'react'
 import { useAuth0 } from "@auth0/auth0-react";
-import CommentForm from './CommentForm'
 
 
 function EventForm({users}){
@@ -152,7 +151,6 @@ function EventForm({users}){
                         <button type='submit'>Submit</button>  
                 </div>
             </form>
-        <CommentForm events = {events} />
         </div>
     )
     }

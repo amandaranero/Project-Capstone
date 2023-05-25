@@ -2,17 +2,20 @@ import {useState} from 'react'
 // this is going to be a form that will be on a post
 // for stretch if time add emoji? is this possible? not sure...
 
-function CommentForm({events}){
+function CommentForm({id}){
     const [comment, setComment] = useState('')
+    const [comments, setComments] = useState([])
     // const {id, name} = events
 
 
     //might not be able to useFormik because of the initial values?
     //post_id should not change
 
+
+    //can change id based off card
     const new_comment={
         content: comment,
-        event_id: '3'
+        event_id: id
     }
 
     const handleSubmit = (e)=>{
@@ -25,11 +28,15 @@ function CommentForm({events}){
             body: JSON.stringify(new_comment)
         })
         .then((resp)=>{
-            if(resp.ok){
+            if (resp.ok){
                 resp.json()
+                .then((commentData)=>{
+                    console.log(commentData)
+                })
             }
         })
-    }
+
+}
 
     return(
         <div>

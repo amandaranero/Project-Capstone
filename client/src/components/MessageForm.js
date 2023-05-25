@@ -4,7 +4,7 @@ import { useState } from "react"
 function MessageForm({id}){
     const [message, setMessage] = useState('')
 
-    console.log(id)
+    // console.log(id)
 
     const new_message={
         content: message,

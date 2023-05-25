@@ -13,9 +13,6 @@ function User(){
     const [messages, setMessages] = useState([])
 
     let {id} = useParams()
-
-    console.log(id)
-    
     
     useEffect(()=>{
         fetch(`/messages/${id}`)
@@ -30,18 +27,15 @@ function User(){
     }, [])
     
 
-
-
     useEffect(()=>{
         fetch(`/users/${id}`)
         .then((resp)=> resp.json())
         .then((user)=> setUserProfile(user))
-    }, [])
+    }, [id])
 
-
-    console.log(userProfile)
 
     function handleMessage(){
+        //open up message form and all messages
         console.log(id)
     }
 
@@ -62,8 +56,6 @@ function User(){
             setFollowing(newFollower)
         })
     }
-
-    console.log(following)
 
 
     return(

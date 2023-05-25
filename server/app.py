@@ -1,7 +1,7 @@
 from flask import Flask, make_response, request, session, render_template
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
-from models import db, User, Event, UserImage, EventImage, Comment, Message
+from models import db, User, Event, UserImage, EventImage, Comment, Message, Like
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import boto3
@@ -24,8 +24,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = b'\xd41\xac\x18\x17\xf7\xf2\x9bqr6=\x8d\x16\xbc\x1c'
 app.json.compact = False
-
-
 
 
 migrate = Migrate(app, db)
@@ -230,7 +228,6 @@ class Events(Resource):
 
             imagedata.filename = get_unique_filename(imagedata.filename)
             image = upload_file_to_s3(imagedata)
-            print(image)
 
             photo = EventImage(
                 url = image['url'],
@@ -257,6 +254,21 @@ class Events(Resource):
 
 api.add_resource(Events, '/events')
 
+class EventsById(Resource):
+    def get(self, id):
+        event = Event.query.filter_by(id=id).first()
+
+        if not event:
+            return make_response({
+                'error': 'that event does not exist'
+            }, 400)
+
+        return make_response(
+            event.to_dict(), 200
+        )
+
+api.add_resource(EventsById, '/events/<int:id>')
+
 class Comments(Resource):
     
     def post(self):
@@ -268,7 +280,8 @@ class Comments(Resource):
                 user_id = session['user_id'],
                 event_id = data['event_id']
             )
-            
+
+
             db.session.add(new_comment)
             db.session.commit()
 
@@ -285,14 +298,23 @@ class Comments(Resource):
 
 api.add_resource(Comments, '/comments')
 
+class CommentsById(Resource):
+    def get(self, id):
+        comments = Comment.query.filter_by(event_id=id).all()
+        
+        content = [comment.content for comment in comments]
+
+        return make_response(
+            content, 200
+        )
+
+api.add_resource(CommentsById, '/comments/<int:id>')
 
 class Follow(Resource):
     def get(self):
         user = User.query.filter_by(id=session['user_id']).first()
 
         following = [follow.username for follow in user.followers]
-
-        print(following)
 
         return make_response(
             following, 200
@@ -312,7 +334,6 @@ class Follow(Resource):
             }, 400)
 
         user.followers.append(following)
-        print(following)
         db.session.commit()
 
 
@@ -328,7 +349,6 @@ class Followed(Resource):
 
         followers = [follow.username for follow in user.following]
 
-        print(followers)
 
         return make_response(
             followers, 200
@@ -362,8 +382,6 @@ class Messages(Resource):
             sender_username
         )]
 
-        print(sent_message)
-
         return make_response(
             sent_message, 201
         )
@@ -384,15 +402,65 @@ class MessagesById(Resource):
 
        result = db.session.query(Message).filter(Message.id.in_(one_and_two))
        message_content = [message.content for message in result]
-       print(message_content)
 
        return make_response(
         message_content, 200
        )
 
-
-    
 api.add_resource(MessagesById, '/messages/<int:id>')
+
+class Likes(Resource):
+    def get(self):
+        users = Like.query.filter_by(user_id = session['user_id']).all()
+        users_events_id = [user.event_id for user in users]
+
+        return make_response(
+            users_events_id, 200
+        )
+
+    def post(self):
+        data = request.get_json()
+        id = data['event_id']
+
+        likes = Like.query.filter_by(event_id = id).all()
+        user = [like.user_id for like in likes]
+        
+        if session['user_id'] in user:
+            likes_by_user = Like.query.filter_by(user_id=session['user_id'],event_id = id).first()
+
+            db.session.delete(likes_by_user)
+            db.session.commit()
+
+        else:
+            add_like = Like(
+            user_id = session['user_id'],
+            event_id = data['event_id']
+        )
+
+            db.session.add(add_like)
+            db.session.commit()
+
+        likes = Like.query.filter_by(event_id = id).all()
+        total = str(len(likes))
+
+        return make_response(
+            total, 201
+        )
+
+
+api.add_resource(Likes, '/likes')
+
+class LikesById(Resource):
+    def get(self, id):
+        likes = Like.query.filter_by(event_id = id).all()
+        total = str(len(likes))
+        user_id_likes = [like.user_id for like in likes]
+        
+        return make_response(
+            user_id_likes, 200
+        )
+
+api.add_resource(LikesById, '/likes/<int:id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
