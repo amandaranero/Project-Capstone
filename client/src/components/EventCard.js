@@ -1,13 +1,13 @@
 import '../componentcss/UserCard.css'
 import {useState, useEffect} from "react"
-import {Link, useNavigate} from 'react-router-dom'
+import {Link, Navigate, useNavigate} from 'react-router-dom'
 import CommentForm from './CommentForm'
 
 function EventCard({event}){
     const {name, description, date, time, event_type, eventimages, id} = event
     const [eventImages, setEventImages] = useState([])
 
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
 
     useEffect(()=>{
         const images = eventimages.map((image)=>{
@@ -18,6 +18,7 @@ function EventCard({event}){
 
 
     function handleClick(){
+        navigate(`/events/${id}`)
         return <CommentForm id={id}/>
     }
 

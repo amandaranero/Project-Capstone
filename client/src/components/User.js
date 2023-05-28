@@ -25,6 +25,8 @@ function User(){
             }
         })
     }, [])
+
+    
     
 
     useEffect(()=>{
@@ -60,27 +62,27 @@ function User(){
 
     return(
         <div>
-        <div>
-            <h2>hi</h2>
+            <h2>{name}</h2>
         <div className = 'card'>
                 {/* <img className='img' src={userImages[0] ? userImages[0].url : null} alt={`${name}’s photo`} /> */}
             <div className = "title">
-                {name}
+                {userProfile.name}
             </div>
             <div className = 'info'>
-                <span> Username: {username}</span>
+                <span> Username: {userProfile.username}</span>
             </div>
-        </div> 
         </div>
+        
+        
         <div>
                 <button onClick={handleFollower}>Follow</button>
-            </div>
             <div>
                 <button onClick={handleMessage}>Message</button>
             </div>
-    )
-        <MessageForm id={id}/>
-        {messages}
+    
+            <MessageForm id={id}/>
+            {messages}
+        </div>
         </div>
     )
 }

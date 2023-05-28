@@ -12,7 +12,10 @@ function Event(){
     const [likeStatus, setLikeStatus] = useState(true)
     const [loading, setLoading] = useState(false)
 
-    const {name, description} = event
+
+    const {name, description, user_id} = event
+
+
     let {id} = useParams()
     const numId = Number(id)
 
@@ -64,6 +67,7 @@ function Event(){
         })
     }, [id])
 
+
     const add_like = {
         event_id: id
     }
@@ -104,8 +108,8 @@ function Event(){
 
     return(
         <div>
+            <h2>{name}</h2>
             <div>
-            <h2>hi</h2>
         <div className = 'card'>
                 {/* <img className='img' src={eventImages[0] ? eventImages[0].url : null} alt={`${name}’s photo`} /> */}
             <div className = "title">

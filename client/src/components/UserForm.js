@@ -1,5 +1,5 @@
 import {useFormik} from 'formik'
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
 import * as yup from 'yup'
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -9,15 +9,14 @@ function UserForm({users}){
     console.log(users)
     
 
+        // FINDING EMAIL IN USER (AUTH0) IN USERS 
         function findEmailID(useremail){
             return useremail.email === user.email
         }
-
         const myEmail = users.find(useremail=> findEmailID(useremail))
-        console.log(myEmail)
-
+        //SETTING ID SO CAN FETCH THIS SPECIFIC USER
         const id = myEmail.id
-        console.log(id)
+
     
 
     const formSchema = yup.object().shape({

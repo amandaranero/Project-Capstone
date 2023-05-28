@@ -85,6 +85,38 @@ class Logout(Resource):
 
 api.add_resource(Logout, '/logout')
 
+class Profile(Resource):
+    def get(self):
+
+        user = User.query.filter_by(id=session['user_id']).first()
+        image = UserImage.query.filter_by(user_id = session['user_id']).first()
+        followers = [follow.to_dict() for follow in user.following]
+        # following = [follow.to_dict() for follow in user.followers]
+        user_events = Event.query.filter_by(user_id = session['user_id']).all()
+        event_name = [events.name for events in user_events]
+        event_id = [events.id for events in user_events]
+        print(event_id)
+
+        try:
+            profile = {
+                    'name': user.name,
+                    'bio':  user.bio,
+                    'username': user.username,
+                    'userimage': image.url,
+            }
+
+            return make_response(
+                profile, 200
+            )
+
+        except:
+            return make_response(
+                {'error':'did not work'}, 400
+            )
+
+
+
+api.add_resource(Profile, '/profile')
 
 class Users(Resource):
     def get(self):
@@ -193,6 +225,17 @@ class UserById(Resource):
 
 api.add_resource(UserById, "/users/<int:id>")
 
+class UserEvents(Resource):
+    def get(self):
+        user_events = Event.query.filter_by(user_id = session['user_id']).all()
+        events = [events.to_dict() for events in user_events]
+
+        
+        return make_response(
+            events, 200
+        )
+
+api.add_resource(UserEvents, '/userevents')
 
 class Events(Resource):
 
@@ -310,11 +353,17 @@ class CommentsById(Resource):
 
 api.add_resource(CommentsById, '/comments/<int:id>')
 
-class Follow(Resource):
+class Following(Resource):
     def get(self):
         user = User.query.filter_by(id=session['user_id']).first()
 
-        following = [follow.username for follow in user.followers]
+        following = [follow.to_dict() for follow in user.followers]
+
+        if not following:
+            return make_response(
+                {'error':'You are not following anyone'}, 
+                400
+            )
 
         return make_response(
             following, 200
@@ -341,7 +390,7 @@ class Follow(Resource):
             following.to_dict(only=('username', 'id')), 201
         )
 
-api.add_resource(Follow, '/follow')
+api.add_resource(Following, '/following')
 
 class Followed(Resource):
     def get(self):
@@ -349,7 +398,11 @@ class Followed(Resource):
 
         followers = [follow.username for follow in user.following]
 
-
+        if not followers:
+            return make_response(
+                {'error': 'you have no followers'}
+            )
+            
         return make_response(
             followers, 200
         )

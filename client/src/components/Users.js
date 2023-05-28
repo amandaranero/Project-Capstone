@@ -1,5 +1,5 @@
-import { User } from "@auth0/auth0-react"
 import UserCard from "./UserCard"
+import {useState, useEffect} from 'react'
 
 
 // okay first going to render all 
@@ -7,8 +7,6 @@ import UserCard from "./UserCard"
 // not you
 
 function Users({users}){
-
-    console.log(users)
 
     const userCards = users.map((user)=>(
         <UserCard key={user.id} user={user} />

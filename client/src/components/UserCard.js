@@ -5,7 +5,6 @@ import User from './User'
 // style will change
 
 function UserCard({user}){
-    console.log(user)
     const {name, id, bio, username, userimages} = user
     const [userImages, setUserImages] = useState([])
     const [following, setFollowing] = useState([])

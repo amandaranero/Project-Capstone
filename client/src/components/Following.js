@@ -1,13 +1,15 @@
-import {useState, useEffect} from 'react'
-import { useParams } from 'react-router-dom'
+import {useState, useEffect, useContext} from 'react'
+import { followingContext } from '../FollowingProvider'
 
 
-function Following({following}){
+function Following(){
+    const following = useContext(followingContext)
+    console.log(following)
+    
 
     return(
         <div>
             <li>
-                {following}
             </li>
         </div>
     )

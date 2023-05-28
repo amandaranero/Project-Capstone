@@ -87,7 +87,7 @@ class Event(db.Model, SerializerMixin):
     comments = db.relationship('Comment', backref='event', cascade='all, delete, delete-orphan')
     likes = db.relationship('Like', backref='event')
 
-    serialize_rules = ('-created_at','-updated_at', '-eventimages.event', '-users', '-comments', '-likes')
+    serialize_rules = ('-created_at','-updated_at', '-eventimages.event', '-users', '-comments', '-likes.event')
 
 
 class EventImage(db.Model, SerializerMixin):
