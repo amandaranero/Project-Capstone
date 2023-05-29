@@ -4,7 +4,6 @@ import {useState} from 'react'
 
 function CommentForm({id}){
     const [comment, setComment] = useState('')
-    const [comments, setComments] = useState([])
     // const {id, name} = events
 
 

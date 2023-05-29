@@ -3,6 +3,7 @@ import {Routes, Route} from 'react-router-dom'
 import { useAuth0 } from "@auth0/auth0-react";
 import ProfileProvider from './ProfileProvider';
 import { usersContext } from './UsersProvider';
+import { eventsContext } from './EventsProvider';
 import {useState, useEffect, useContext} from 'react'
 import NavBar from './components/NavBar'
 import UserForm from './components/UserForm';
@@ -24,7 +25,7 @@ import UserEvents from './components/UserEvents';
 function App() {
   const {user} = useAuth0()
   const [users, setUsers] = useContext(usersContext)
-  const [events, setEvents] = useState([])
+  const [events, setEvents] = useContext(eventsContext)
 
 
   useEffect(()=>{
@@ -40,7 +41,6 @@ function App() {
       }
     })
   }, [])
-
   
   useEffect(()=>{
     fetch('/events')
@@ -53,6 +53,7 @@ function App() {
       }
     })
   }, [])
+
 
 
 
@@ -70,11 +71,10 @@ function App() {
           <Route path = "/userform" element={<UserForm />}/>
           <Route path = "/eventform" element={<EventForm/>}/>
           <Route path ='/followers' element={<Followers/>}/>
-          {/* <Route path ='/messages/:id' element={<Messages/>}/> */}
-          <Route path = '/events' element={<Events events={events}/>}/>
+          <Route path = '/events' element={<Events/>}/>
           <Route path ='/events/:id' element={<Event />}/>
           <Route path ='/following' element={<Following />}/>
-          <Route path = "/profile" element={<ProfilePage events={events}/>}/>
+          <Route path = "/profile" element={<ProfilePage/>}/>
           </Routes>
         </ProfileProvider>
     </div>

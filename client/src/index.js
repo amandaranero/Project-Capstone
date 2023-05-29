@@ -6,6 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Auth0Provider, User } from "@auth0/auth0-react";
 import UserProvider from './UsersProvider';
+import EventsProvider from './EventsProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -18,9 +19,13 @@ root.render(
         redirect_uri: "http://localhost:4000/"
       }}
     >
+          <EventsProvider>
           <UserProvider>
-        <App />
+
+            <App />
+            
         </UserProvider>
+        </EventsProvider>
     </Auth0Provider>
 
   </BrowserRouter>

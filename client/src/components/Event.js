@@ -18,7 +18,6 @@ function Event(){
 
     let {id} = useParams()
     const numId = Number(id)
-
     useEffect(()=>{
         fetch('/likes')
         .then((resp)=>{
@@ -26,7 +25,6 @@ function Event(){
                 resp.json()
                 .then((data)=>{
                     setEventIds(data)
-                    setLoading(!loading)
                 })
             }
         })
@@ -41,6 +39,8 @@ function Event(){
         }
     })    
 
+    //returns id of users
+    //bc users only like once then
     useEffect(()=>{
         fetch(`/likes/${id}`)
         .then((resp)=>{
@@ -53,6 +53,7 @@ function Event(){
             }
         })
     }, [id])
+
     
 
     useEffect(()=>{
@@ -104,7 +105,7 @@ function Event(){
                 })
             }
         })
-    }, [id])
+    }, [])
 
     return(
         <div>

@@ -4,43 +4,9 @@ import { useEffect, useState } from 'react';
 
 
 function UserEvents(){
-    const [userevents, setUserevents] = useState([])
-    const [userEvent, setUserEvent] = useState([])
-    
-
-  
-
-
-    // GETS EVENTS FOR USER SESSION:
-  
-    // useEffect(()=>{
-    //   fetch('/userevents')
-    //   .then((resp)=>{
-    //     if(resp.ok){
-    //       resp.json()
-    //       .then((data)=>{
-    //         setUserevents(data)
-    //       })
-    //     }
-    //   })
-    // }, [])
-
-
-    // useEffect(()=>{
-    //     const event = userevents.map((userevent)=>{
-    //         return userevent
-    //     })
-    //     setUserEvent(event)
-    // },[])
-
-    // console.log(userEvent)
-    
-
-
-
 
    
-    //userevent coming up undefined everytime
+
     return(
         <div>
             <nav>

@@ -1,6 +1,7 @@
 import {useFormik} from 'formik'
 import * as yup from 'yup'
 import {useEffect, useState} from 'react'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -8,6 +9,8 @@ function EventForm(){
     const [loading, setLoading] = useState(false)
     const [events, setEvents] = useState([])
     const [event, setEvent] = useState({})
+
+    const navigate = useNavigate()
 
     
 
@@ -60,7 +63,8 @@ function EventForm(){
                 setLoading(false)
                 setEvents([...events, eventData])
                 setEvent(eventData)
-                helpers.resetForm() 
+                helpers.resetForm()
+                navigate('/events')
             } else{
                 setLoading(false)
                 console.log('failed')

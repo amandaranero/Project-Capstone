@@ -2,15 +2,13 @@ import {Link} from 'react-router-dom'
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState, useContext} from 'react';
 import { profileContext } from '../ProfileProvider';
-// import { followingContext } from '../FollowingProvider';
-import Following from './Following';
+import UserEvents from './UserEvents';
 
 
 function ProfilePage(){
     const {isAuthenticated} = useAuth0();
     const [profile, setProfile] = useContext(profileContext)
     const {name, username, bio, userimages, following, events} = profile
-
 
 
   //FETCH PROFILE INFO AND SET TO USECONTEXT STATE, PERHAPS WILL HOLD SPEC FOLLOWING BETTER
@@ -26,9 +24,6 @@ function ProfilePage(){
       })
     },[])
 
-
-  console.log(profile)
-  console.log(events)
 
     return(
         isAuthenticated && (
@@ -49,7 +44,6 @@ function ProfilePage(){
               <p>{username}</p>
               <Link to={'/following'}>
               <button>Following</button>
-
               </Link>
             </div> 
           )
