@@ -90,12 +90,11 @@ class Profile(Resource):
 
         user = User.query.filter_by(id=session['user_id']).first()
         image = UserImage.query.filter_by(user_id = session['user_id']).first()
-        followers = [follow.to_dict() for follow in user.following]
-        # following = [follow.to_dict() for follow in user.followers]
-        user_events = Event.query.filter_by(user_id = session['user_id']).all()
-        event_name = [events.name for events in user_events]
-        event_id = [events.id for events in user_events]
-        print(event_id)
+        # followers = [follow.to_dict() for follow in user.following]
+        following = [follow.to_dict() for follow in user.followers]
+        userevents = Event.query.filter_by(user_id = session['user_id']).all()
+        events = [events.to_dict() for events in userevents]
+
 
         try:
             profile = {
@@ -103,6 +102,8 @@ class Profile(Resource):
                     'bio':  user.bio,
                     'username': user.username,
                     'userimage': image.url,
+                    'following' : following,
+                    'events':events
             }
 
             return make_response(

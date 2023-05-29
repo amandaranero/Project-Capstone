@@ -1,47 +1,20 @@
 import {Link} from 'react-router-dom'
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState, useContext} from 'react';
-import { followingContext } from '../FollowingProvider';
-import { followingListContext } from '../FollowingListProvider'
-import Following from './Following'
+import { profileContext } from '../ProfileProvider';
+// import { followingContext } from '../FollowingProvider';
+import Following from './Following';
+
 
 function ProfilePage(){
-    const {isAuthenticated, isLoading } = useAuth0();
-    const [profile, setProfile] = useState([])
-    const {name, username, bio, userimage} = profile
-    const [following, setFollowing] = useContext(followingContext)
-    const [followingList, setFollowingList] = useContext(followingListContext)
-    const [list, setList] = useState([])
+    const {isAuthenticated} = useAuth0();
+    const [profile, setProfile] = useContext(profileContext)
+    const {name, username, bio, userimages, following, events} = profile
 
 
-  //fetch the following data
+
+  //FETCH PROFILE INFO AND SET TO USECONTEXT STATE, PERHAPS WILL HOLD SPEC FOLLOWING BETTER
   useEffect(()=>{
-    fetch('/following')
-    .then((resp)=>{
-      if(resp.ok){
-        resp.json()
-        .then((followingData)=>{
-          setFollowing(followingData)
-        })
-      }
-    })
-  },[])
-  console.log(following)
-
-  useEffect(()=>{
-    const followingLists = following.map((followed)=>{
-      return followed
-    })
-    setFollowingList(followingLists)
-  },[])
-
-
-  console.log(followingList)
-
-
-
-    //FETCH PROFILE INFO
-    useEffect(()=>{
       fetch('/profile')
       .then((resp)=>{
         if(resp.ok){
@@ -54,14 +27,13 @@ function ProfilePage(){
     },[])
 
 
-    if (isLoading) {
-      return <div>Loading ...</div>;
-    }
-
+  console.log(profile)
+  console.log(events)
 
     return(
         isAuthenticated && (
-            <div>
+          <div>
+              {/* <Following followingList={followingList}/> */}
               <h2>{name}</h2>
               <div>
               </div>
@@ -75,7 +47,10 @@ function ProfilePage(){
               {/* <img src={userimage} alt={name} /> */}
               <h2>{bio}</h2>
               <p>{username}</p>
+              <Link to={'/following'}>
               <button>Following</button>
+
+              </Link>
             </div> 
           )
         );

@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";how
+import { usersContext } from "../UsersProvider";
 
 
-const LoginButton = ({users}) => {
+
+const LoginButton = () => {
   const {user, loginWithRedirect, getAccessTokenSilently, isAuthenticated} = useAuth0();
+  const {users} = useContext(usersContext)
 
   const navigate = useNavigate()
 

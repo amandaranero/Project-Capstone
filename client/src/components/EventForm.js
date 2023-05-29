@@ -1,14 +1,13 @@
 import {useFormik} from 'formik'
 import * as yup from 'yup'
 import {useEffect, useState} from 'react'
-import { useAuth0 } from "@auth0/auth0-react";
 
 
-function EventForm({users}){
+
+function EventForm(){
     const [loading, setLoading] = useState(false)
     const [events, setEvents] = useState([])
     const [event, setEvent] = useState({})
-    const { user} = useAuth0()
 
     
 

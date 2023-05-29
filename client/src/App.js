@@ -1,8 +1,9 @@
 import './App.css';
-import FollowingProvider from './FollowingProvider';
-import FollowingListProvider from './FollowingListProvider';
-import {Routes, Route, BrowserRouter} from 'react-router-dom'
-import {useState, useEffect} from 'react'
+import {Routes, Route} from 'react-router-dom'
+import { useAuth0 } from "@auth0/auth0-react";
+import ProfileProvider from './ProfileProvider';
+import { usersContext } from './UsersProvider';
+import {useState, useEffect, useContext} from 'react'
 import NavBar from './components/NavBar'
 import UserForm from './components/UserForm';
 import ProfilePage from './components/ProfilePage';
@@ -21,10 +22,11 @@ import UserEvents from './components/UserEvents';
 
 
 function App() {
-  const [users, setUsers] = useState([])
+  const {user} = useAuth0()
+  const [users, setUsers] = useContext(usersContext)
   const [events, setEvents] = useState([])
 
-  
+
   useEffect(()=>{
     fetch('/users')
     .then((resp)=>{
@@ -38,7 +40,6 @@ function App() {
       }
     })
   }, [])
-
 
   
   useEffect(()=>{
@@ -58,26 +59,24 @@ function App() {
   return (
     <div className="App">      
       {/* <Profile/> */}
-      <NavBar users={users}/>
-      <FollowingListProvider>
-      <FollowingProvider>
+      <NavBar/>
+      <ProfileProvider>
         <Routes>
           <Route path ="/userevents" element = {<UserEvents/>}/>
           <Route path ="/users/:id" element={<User/>}/>
-          <Route path="/users" element={<Users users={users}/>}/>
+          <Route path="/users" element={<Users/>}/>
           <Route path = "/" element = {<Home/>}/>
           <Route path ="/commentform" element = {<CommentForm/>}/>
-          <Route path = "/userform" element={<UserForm users={users}/>}/>
-          <Route path = "/eventform" element={<EventForm users={users}/>}/>
+          <Route path = "/userform" element={<UserForm />}/>
+          <Route path = "/eventform" element={<EventForm/>}/>
           <Route path ='/followers' element={<Followers/>}/>
           {/* <Route path ='/messages/:id' element={<Messages/>}/> */}
           <Route path = '/events' element={<Events events={events}/>}/>
-          <Route path ='/events/:id' element={<Event users={users} />}/>
+          <Route path ='/events/:id' element={<Event />}/>
           <Route path ='/following' element={<Following />}/>
           <Route path = "/profile" element={<ProfilePage events={events}/>}/>
-      </Routes>
-      </FollowingProvider>
-      </FollowingListProvider>
+          </Routes>
+        </ProfileProvider>
     </div>
   );
 }

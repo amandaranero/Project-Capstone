@@ -1,11 +1,9 @@
 import {useState, useEffect, useContext} from 'react'
-import { followingContext } from '../FollowingProvider'
+import { profileContext } from '../ProfileProvider'
 
 
-function Following(){
-    const following = useContext(followingContext)
-    console.log(following)
-    
+function Following({followed}){
+    console.log(followed)
 
     return(
         <div>

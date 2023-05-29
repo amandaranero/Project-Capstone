@@ -1,12 +1,18 @@
 import {useFormik} from 'formik'
-import {useState} from 'react'
+import {useState, useContext} from 'react'
 import * as yup from 'yup'
 import { useAuth0 } from "@auth0/auth0-react";
+import {useNavigate} from 'react-router-dom'
+import { usersContext } from "../UsersProvider"
 
-function UserForm({users}){
+function UserForm(){
     const [loading, setLoading] = useState(false)
+    const [users, setUsers] = useContext(usersContext)
     const {user} = useAuth0();
     console.log(users)
+    console.log(user)
+
+    const navigate = useNavigate()
     
 
         // FINDING EMAIL IN USER (AUTH0) IN USERS 
@@ -14,8 +20,9 @@ function UserForm({users}){
             return useremail.email === user.email
         }
         const myEmail = users.find(useremail=> findEmailID(useremail))
-        //SETTING ID SO CAN FETCH THIS SPECIFIC USER
-        const id = myEmail.id
+        // //SETTING ID SO CAN FETCH THIS SPECIFIC USER
+        // const id = myEmail.id
+
 
     
 
@@ -40,7 +47,7 @@ function UserForm({users}){
                     formData.append(value, values[value]);
                 }
                 setLoading(true)
-                const resp = await fetch(`/users/${id}`, {
+                const resp = await fetch(`/users/`, {
                     method: 'PATCH',
                     body: formData,
                 }) 
@@ -49,6 +56,7 @@ function UserForm({users}){
                     setLoading(false)
                     console.log("passed", userData)
                     helpers.resetForm()
+                    navigate('/profile')
                 }else{
                     setLoading(false)
                     console.log('failed')

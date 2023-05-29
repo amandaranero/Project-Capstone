@@ -4,8 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { Auth0Provider } from "@auth0/auth0-react";
-
+import { Auth0Provider, User } from "@auth0/auth0-react";
+import UserProvider from './UsersProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,13 +15,15 @@ root.render(
       domain="dev-25w7agdwhg84ki1g.us.auth0.com"
       clientId="TJVpfRWiLNip9hWjrpGlAyoC1cpaKXvS"
       authorizationParams={{
-        redirect_uri: "http://localhost:4000/profile"
+        redirect_uri: "http://localhost:4000/"
       }}
     >
+          <UserProvider>
         <App />
+        </UserProvider>
     </Auth0Provider>
+
   </BrowserRouter>
-  
   </React.StrictMode>
 );
 
