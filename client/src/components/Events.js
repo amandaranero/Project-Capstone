@@ -3,6 +3,8 @@ import { useContext } from "react"
 import { eventsContext } from "../EventsProvider"
 
 
+
+
 function Events(){
     const [events, setEvents] = useContext(eventsContext)
 

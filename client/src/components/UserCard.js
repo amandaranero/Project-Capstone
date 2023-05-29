@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react'
-import '../componentcss/UserCard.css'
 import {Link, useParams} from 'react-router-dom'
 import User from './User'
 // style will change

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import { usersContext } from "../UsersProvider";
+import Button from '@mui/material/Button';
 
 
 
@@ -70,7 +71,7 @@ const LoginButton = () => {
   },[getAccessTokenSilently])
 
   return ( 
-   <button onClick={()=> loginWithRedirect()}>Log In</button>
+   <Button variant="outlined" onClick={()=> loginWithRedirect()}>Log In</Button>
   )
 };
 //fetch request my front end

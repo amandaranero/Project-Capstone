@@ -8,9 +8,8 @@ function Home(){
 
     return(
         isAuthenticated && (
-            <div>
-            <h2>Hi {user.name}</h2>
-        </div>
+            <header className="bg-gray-100 p-6">
+          </header>
 
         )
     )

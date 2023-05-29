@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import './index.css';
+// import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { Auth0Provider, User } from "@auth0/auth0-react";
+import { Auth0Provider} from "@auth0/auth0-react";
 import UserProvider from './UsersProvider';
 import EventsProvider from './EventsProvider';
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from './theme';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,9 +25,10 @@ root.render(
     >
           <EventsProvider>
           <UserProvider>
-
-            <App />
-            
+              <ThemeProvider theme={theme}>
+                  <CssBaseline />
+                  <App />
+            </ThemeProvider>,
         </UserProvider>
         </EventsProvider>
     </Auth0Provider>

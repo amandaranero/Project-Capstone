@@ -5,6 +5,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import {useNavigate} from 'react-router-dom'
 import { usersContext } from "../UsersProvider"
 
+
 function UserForm(){
     const [loading, setLoading] = useState(false)
     const [users, setUsers] = useContext(usersContext)
@@ -21,7 +22,7 @@ function UserForm(){
         }
         const myEmail = users.find(useremail=> findEmailID(useremail))
         // //SETTING ID SO CAN FETCH THIS SPECIFIC USER
-        // const id = myEmail.id
+        const id = myEmail.id
 
 
     

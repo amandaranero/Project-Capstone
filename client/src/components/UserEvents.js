@@ -1,17 +1,15 @@
-import '../componentcss/UserCard.css'
 import {Link} from 'react-router-dom'
 import { useEffect, useState } from 'react';
+import Button from '@mui/material/Button';
 
 
 function UserEvents(){
-
-   
 
     return(
         <div>
             <nav>
                 <Link to = {'/eventform'}>
-                    <button>Add an Event</button>
+                    <Button variant="outlined">Add an Event</Button>
                 </Link>
             </nav>
             <div>

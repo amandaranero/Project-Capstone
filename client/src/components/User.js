@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import '../componentcss/UserCard.css'
 import { Navigate, useParams, Link } from 'react-router-dom'
 import MessageForm from './MessageForm'
 // import Messages from './Messages'

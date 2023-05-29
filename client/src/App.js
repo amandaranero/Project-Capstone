@@ -1,4 +1,4 @@
-import './App.css';
+import './App.css'
 import {Routes, Route} from 'react-router-dom'
 import { useAuth0 } from "@auth0/auth0-react";
 import ProfileProvider from './ProfileProvider';
@@ -58,7 +58,7 @@ function App() {
 
 
   return (
-    <div className="App">      
+    <div className="App" >      
       {/* <Profile/> */}
       <NavBar/>
       <ProfileProvider>

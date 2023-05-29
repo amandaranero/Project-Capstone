@@ -2,7 +2,8 @@ import LoginButton from "./LoginButton"
 import LogoutButton from "./LogoutButton"
 import { useAuth0 } from "@auth0/auth0-react";
 import {Link} from 'react-router-dom'
-
+import * as React from 'react';
+import Button from '@mui/material/Button';
 
 
 function NavBar(){
@@ -16,15 +17,22 @@ function NavBar(){
         )
     }else{
         return(
-            <div>
+            <header className="bg-gray-100 p-6">
+            <div className="flex items-center justify-between flex-wrap">
+                <div className="block"> 
                 <Link to ={'/'}>
-                    <button>Home</button>
+                <Button variant="outlined">Home</Button>
                 </Link>
                 <Link to ={'/profile'}>
-                    <button>Your Profile</button>
+                <Button variant="outlined">Your Profile</Button>
                 </Link>
-                <LogoutButton/>
+                <Link to ={'/events'}>
+                <Button variant="outlined">Explore Events</Button>
+                </Link>
+               <LogoutButton/>
+               </div>
             </div>
+            </header>
         ) 
     }
 }
