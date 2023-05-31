@@ -1,48 +1,67 @@
 import {Link} from 'react-router-dom'
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect, useState, useContext} from 'react';
+import { useContext, useEffect} from 'react';
 import { profileContext } from '../ProfileProvider';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import ProfileBar from './ProfileBar';
 import Events from './Events';
+import Following from './Following'
+import { experimentalStyled as styled } from "@mui/material/styles";
+import Paper from "@mui/material/Paper";
+import { Button } from '@mui/material'
+import Stack from '@mui/material/Stack';
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(2),
+  textAlign: "center",
+  color: theme.palette.text.secondary
+}));
 
 
 function ProfilePage(){
     const {isAuthenticated} = useAuth0();
-    const [profile, setProfile] = useContext(profileContext)
-    const {name, username, bio, userimage, following, events} = profile
+    const [profile] = useContext(profileContext)
+    const {name, username, bio, following, events} = profile
+  
 
-    console.log(following)
 
-
-  //FETCH PROFILE INFO AND SET TO USECONTEXT STATE, PERHAPS WILL HOLD SPEC FOLLOWING BETTER
-  useEffect(()=>{
-      fetch('/profile')
-      .then((resp)=>{
-        if(resp.ok){
-          resp.json()
-          .then((profData)=>{
-            setProfile(profData)
-          })
-        }
-      })
-    },[])
+      const followingList = following?.map((followed)=>(
+        <Following key={followed.id} followed={followed}/>
+      ))
 
 
     return(
         isAuthenticated && (
-          <Box sx={{ flexGrow: 1 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={4}>
-                <div className='grid-elements'>
-                  <ProfileBar name={name} username={username} userimage={userimage}/>
-                </div>
+          <div style={{ padding: 35}}>
+          <Box sx={{ flexGrow: 1}}>
+              <Grid
+                container  
+                direction="row"
+                justifyContent="center"
+                spacing={{ xs: 0.5, md: 3}}
+                columns={{ xs: 10, sm: 8, md: 12 }}
+              >
+              <Grid item xs={3} sm={4} md={4}>
+                      Following
+                        {followingList}
+                  </Grid>
+                <Grid item xs={7} sm={4} md={4}>
+                  Upcoming Events
+                  <Events/>
+                </Grid>
+                <Grid item xs={2} sm={4} md={4}>
+                <Link to={'/userevents'}>
+                    <Button variant="contained"  size ='large' sx={{ backgroundColor: "pink"  }}>
+                      Your Events
+                    </Button>
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
-            Should be the following events
-            <Events/>
-          </Box>
+              </Box>
+              </div>
+       
           )
         );
       };

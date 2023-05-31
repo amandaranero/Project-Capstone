@@ -10,6 +10,8 @@ import EventsProvider from './EventsProvider';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
+import ProfileProvider from './ProfileProvider';
+import UserEventProvider from './UserEventProvider';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -22,15 +24,20 @@ root.render(
       authorizationParams={{
         redirect_uri: "http://localhost:4000/"
       }}
-    >
+    >   
+
+  <UserEventProvider>
+    <ProfileProvider>
           <EventsProvider>
-          <UserProvider>
+            <UserProvider>
               <ThemeProvider theme={theme}>
                   <CssBaseline />
                   <App />
             </ThemeProvider>,
         </UserProvider>
         </EventsProvider>
+        </ProfileProvider>
+        </UserEventProvider>
     </Auth0Provider>
 
   </BrowserRouter>

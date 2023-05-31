@@ -1,19 +1,24 @@
-import {Link} from 'react-router-dom'
-import { useEffect, useState } from 'react';
-import Button from '@mui/material/Button';
+import { useContext } from 'react';
+import { userEventContext } from '../UserEventProvider';
+import EventForm from './EventForm'
+import UserEventCard from './UserEventCard';
 
 
 function UserEvents(){
+    const [userEvent, setUserEvent] = useContext(userEventContext)
+
+    const userEventCards = userEvent?.map((event)=>(
+        <UserEventCard key={event.id} event={event}/>
+    ))
 
     return(
         <div>
             <nav>
-                <Link to = {'/eventform'}>
-                    <Button variant="outlined">Add an Event</Button>
-                </Link>
+                <EventForm/>
             </nav>
             <div>
-            <h2>hi</h2>
+            <h2>hh</h2>
+            {userEventCards}
         <div className = 'card'>
                 {/* <img className='img' src={eventImages[0] ? eventImages[0].url : null} alt={`${name}’s photo`} /> */}
             <div className = "title">

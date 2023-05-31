@@ -162,9 +162,9 @@ function Event(){
             </Typography>
           </CardContent>
           <CardActions disableSpacing>
-            <IconButton aria-label="add to favorites">
+            <IconButton aria-label="add to favorites" onClick = {handleLike}>
             {numLikes}
-              <FavoriteIcon onClick = {handleLike} /> 
+              <FavoriteIcon /> 
               {likeStatus ? 'Like' : 'Unlike'} 
             </IconButton>
             <Button variant="outlined" onClick ={handleComment}> Add Comment</Button>

@@ -1,4 +1,5 @@
 import UserCard from "./UserCard"
+import User from "./User"
 import {useState, useEffect, useContext} from 'react'
 import { usersContext } from "../UsersProvider"
 
@@ -13,6 +14,7 @@ function Users(){
     const userCards = users.map((user)=>(
         <UserCard key={user.id} user={user} />
     ))
+
 
     return(
         <div>

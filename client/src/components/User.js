@@ -1,17 +1,42 @@
-import { useState, useEffect } from 'react'
-import { Navigate, useParams, Link } from 'react-router-dom'
-import MessageForm from './MessageForm'
-// import Messages from './Messages'
+import { useState, useEffect, useContext } from 'react'
+import { useParams } from 'react-router-dom'
+import { useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+
+
 
 
 function User(){
-    const [userProfile, setUserProfile] = useState({})
     const [following, setFollowing] = useState([])
     const [follow, setFollow] = useState({})
-    const {name, username, userimages, bio}= userProfile
     const [messages, setMessages] = useState([])
-
+    const [userProfile, setUserProfile] = useState([])
+    const [image, setImage] = useState([])
+    const {bio, email, name, userimages, username} = userProfile
+    const theme = useTheme();
+    
     let {id} = useParams()
+
+    useEffect(()=>{
+        fetch(`/users/${id}`)
+        .then((resp)=> resp.json())
+        .then((user)=> setUserProfile(user))
+    }, [id])
+
+
+    //NOT FUCKING WORKING//
+    useEffect(()=>{
+        const images = userimages?.map((image)=>{
+            return image
+        })
+        setImage(images)
+    }, [userProfile])
+
     
     useEffect(()=>{
         fetch(`/messages/${id}`)
@@ -25,14 +50,6 @@ function User(){
         })
     }, [])
 
-    
-    
-
-    useEffect(()=>{
-        fetch(`/users/${id}`)
-        .then((resp)=> resp.json())
-        .then((user)=> setUserProfile(user))
-    }, [id])
 
 
     function handleMessage(){
@@ -61,29 +78,29 @@ function User(){
 
     return(
         <div>
-            <h2>{name}</h2>
-        <div className = 'card'>
-                {/* <img className='img' src={userImages[0] ? userImages[0].url : null} alt={`${name}’s photo`} /> */}
-            <div className = "title">
-                {userProfile.name}
-            </div>
-            <div className = 'info'>
-                <span> Username: {userProfile.username}</span>
-            </div>
-        </div>
-        
-        
-        <div>
-                <button onClick={handleFollower}>Follow</button>
-            <div>
-                <button onClick={handleMessage}>Message</button>
-            </div>
-    
-            <MessageForm id={id}/>
-            {messages}
-        </div>
-        </div>
+    <Card sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <CardContent sx={{ flex: '1 0 auto' }}>
+          <Typography component="div" variant="h5">
+            {name}
+          </Typography>
+          <Typography variant="subtitle1" color="text.secondary" component="div">
+            {username}
+          </Typography>
+        </CardContent>
+      </Box>
+      <CardMedia
+        component="img"
+        sx={{ width: 151 }}
+        // image={image ?  null : image.url} 
+        alt={`${name}’s photo`}
+      />
+    </Card>
+
+    </div>
+
     )
 }
 
 export default User
+

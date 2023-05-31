@@ -4,6 +4,7 @@ from flask_restful import Api, Resource
 from models import db, User, Event, UserImage, EventImage, Comment, Message, Like
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from sqlalchemy_serializer import SerializerMixin
 import boto3
 import botocore
 import os
@@ -242,6 +243,7 @@ class Events(Resource):
 
     def get(self):
         events = [events.to_dict() for events in Event.query.all()]
+        
 
         return make_response(
             events,
@@ -312,6 +314,18 @@ class EventsById(Resource):
         )
 
 api.add_resource(EventsById, '/events/<int:id>')
+
+class ProfileEvents(Resource):
+    def get(self, id):
+        event = Event.query.filter_by(user_id=id).all()
+
+        events = [e.to_dict() for e in event]
+
+        return make_response(
+            events, 200
+        )
+
+api.add_resource(ProfileEvents, '/profilevents/<int:id>')
 
 class Comments(Resource):
     
@@ -423,21 +437,10 @@ class Messages(Resource):
         db.session.add(new_message)
         db.session.commit()
 
-        recmess = new_message.message_reciever.to_dict()
-        sendmess = new_message.message_sender.to_dict()
-        content = new_message.content
 
-        reciever_username = recmess['username']
-        sender_username = sendmess['username']
-
-        sent_message=[(
-            content,
-            reciever_username,
-            sender_username
-        )]
 
         return make_response(
-            sent_message, 201
+            new_message.to_dict(only=('content', 'reciever_id', 'sender_id')), 201
         )
 
 
@@ -445,21 +448,27 @@ api.add_resource(Messages, '/messages')
 
 class MessagesById(Resource):
     def get(self,id):
-       messages_sender = Message.query.filter_by(sender_id=session['user_id']).all()
-       message_sender_id = [messages.id for messages in messages_sender]
+        messages_sender = Message.query.filter_by(sender_id=session['user_id']).all()
+        message_sender_id = [messages.id for messages in messages_sender]
 
-       message_reciever = Message.query.filter_by(reciever_id = id).all()
-       message_reciever_id = [messages.id for messages in message_reciever]
+        message_reciever = Message.query.filter_by(reciever_id = id).all()
+        message_reciever_id = [messages.id for messages in message_reciever]
 
-       one_and_two = set(message_sender_id) & set(message_reciever_id)
-       one_and_two_list = list(one_and_two)
+        one_and_two = set(message_sender_id) & set(message_reciever_id)
+        one_and_two_list = list(one_and_two)
+        
+        result = db.session.query(Message).filter(Message.id.in_(one_and_two))
 
-       result = db.session.query(Message).filter(Message.id.in_(one_and_two))
-       message_content = [message.content for message in result]
+        messages = []
+        
+        for message in result:
+            mess = message.to_dict(only=('reciever_id', 'sender_id' ,'content'))
+            messages.append(mess)
 
-       return make_response(
-        message_content, 200
-       )
+
+        return make_response(
+            messages, 200
+        )
 
 api.add_resource(MessagesById, '/messages/<int:id>')
 

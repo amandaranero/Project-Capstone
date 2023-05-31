@@ -1,32 +1,18 @@
 import {useFormik} from 'formik'
 import * as yup from 'yup'
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { userEventContext } from '../UserEventProvider';
 
 
 
 function EventForm(){
+    const [userEvent, setUserEvent] = useContext(userEventContext)
     const [loading, setLoading] = useState(false)
-    const [events, setEvents] = useState([])
     const [event, setEvent] = useState({})
 
-    const navigate = useNavigate()
 
     
-
-    useEffect(()=>{
-        fetch('/events')
-        .then((resp)=>{
-            if (resp.ok){
-                resp.json()
-                .then((eventData)=>{
-                setEvents(eventData)
-            })
-            } else{
-                console.log('error')
-            }
-        })
-    },[])
 
 
     const formSchema = yup.object().shape({
@@ -61,16 +47,17 @@ function EventForm(){
             if (resp.ok){
                 const eventData = await resp.json()
                 setLoading(false)
-                setEvents([...events, eventData])
-                setEvent(eventData)
+                setUserEvent([...userEvent, eventData])
+                // setUserEvent(eventData)
                 helpers.resetForm()
-                navigate('/events')
             } else{
                 setLoading(false)
                 console.log('failed')
             }
         }
     })
+
+    console.log(userEvent)
 
     
 

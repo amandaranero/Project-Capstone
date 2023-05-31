@@ -1,5 +1,6 @@
-import {useState} from 'react'
+import {useState, useContext} from 'react'
 import {useNavigate } from 'react-router-dom'
+import { profileContext } from '../ProfileProvider';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,7 +15,9 @@ import MenuItem from '@mui/material/MenuItem';
 const pages = ['Your Events'];
 const settings = ['Edit Profile'];
 
-function ProfileBar({name, username, userimage}) {
+function ProfileBar() {
+  const [profile] = useContext(profileContext)
+  const {name, username, userimage} = profile
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const navigate = useNavigate()

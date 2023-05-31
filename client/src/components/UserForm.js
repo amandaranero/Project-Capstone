@@ -48,7 +48,7 @@ function UserForm(){
                     formData.append(value, values[value]);
                 }
                 setLoading(true)
-                const resp = await fetch(`/users/`, {
+                const resp = await fetch(`/users/${id}`, {
                     method: 'PATCH',
                     body: formData,
                 }) 

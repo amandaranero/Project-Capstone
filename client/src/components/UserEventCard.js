@@ -21,9 +21,9 @@ const Item = styled('div')(({ theme }) => ({
 }));
 
 
-function EventCard({event}){
+function UserEventCard({event}){
     const {name, description, date, time, eventimage, id} = event
-    const [eventImages, setEventImages] = useState([])
+    // const [eventImages, setEventImages] = useState([])
 
     const navigate = useNavigate()
 
@@ -76,41 +76,4 @@ function EventCard({event}){
       );
     }
 
-export default EventCard
-
-
-
-
-{/* <Box sx={{ flexGrow: 1 }}>
-<Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-  {Array.from(Array(6)).map((_, index) => (
-    <Grid xs={2} sm={4} key={index}>
-      <Item>
-      <Card sx={{ maxWidth: 345 }}>
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              height="140"
-              image="https://media.npr.org/assets/img/2022/11/04/gettyimages-1183414292-1-_slide-edff8c3fe6afcab5c6457e3c7bd011f5c1745161-s1100-c50.jpg"
-              alt={name}
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                {name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {description}
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-          <CardActions>
-            <Button size="small" color="primary" onClick={handleClick}>
-              More Info
-            </Button>
-          </CardActions>
-        </Card>
-      </Item>
-    </Grid>
-  ))}
-</Grid>
-</Box> */}
+export default UserEventCard
