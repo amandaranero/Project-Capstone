@@ -39,7 +39,7 @@ function EventForm(){
                 formData.append(value, values[value])
             }
             setLoading(true)
-            const resp = await fetch('/events', {
+            const resp = await fetch('/userevents', {
                 method: 'POST',
                 body: formData,
             })

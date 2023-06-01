@@ -7,16 +7,10 @@ import { useContext } from 'react';
 import { likedEventsContext } from '../LikedEventsProvider';
 
 function LikedEvents({e}){
-    const theme = useTheme();
     const [likedEvents] = useContext(likedEventsContext)
     console.log(likedEvents)
     const {name, user_id, date, time, event, eventimages} = e
 
-    const events = likedEvents.map((ev)=>{
-      return ev
-    })
-
-    console.log(events)
     
 
     return(

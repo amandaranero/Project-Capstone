@@ -41,7 +41,6 @@ function CommentForm(){
     }
 
     const handleSubmit = (e)=>{
-        console.log("hi")
         e.preventDefault()
         fetch('/comments', {
             method: 'POST',

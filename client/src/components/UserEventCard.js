@@ -1,5 +1,6 @@
-import {useState, useEffect} from "react"
+import {useState, useEffect, useContext} from "react"
 import {Link, Navigate, useNavigate} from 'react-router-dom'
+import {userEventContext } from '../UserEventProvider'
 import CommentForm from './CommentForm'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -21,22 +22,37 @@ const Item = styled('div')(({ theme }) => ({
 }));
 
 
-function UserEventCard({event, handleShowEdit}){
+function UserEventCard({event}){
+    const [userEvent, setUserEvent] = useContext(userEventContext)
     const {name, description, date, time, eventimages, id} = event
-    console.log(eventimages)
 
     const navigate = useNavigate()
 
+    const handleDelete = ()=>{
+      fetch(`/userevents/${id}`,{
+        method:'DELETE'
+      }).then((resp)=>{
+        if(resp.ok){
+          resp.json()
+          .then((userEventData)=>{
+            setUserEvent(userEventData)
+            console.log(userEventData)
+          })
+        }
 
+      })
+    }
 
     function handleClick(){
         navigate(`/events/${id}`)
         return <CommentForm id={id}/>
     }
 
-    const handleEdit=()=>{
-      console.log("hi")
+    const handleEdit = ()=>{
+      navigate(`editeventform/${id}`)
     }
+
+
 
 
     return (
@@ -46,18 +62,18 @@ function UserEventCard({event, handleShowEdit}){
         justifyContent: 'center' }}> 
       <Card sx={{ width: 425, height: 400 }}>
           <CardActionArea>
-          <Button onClick={handleShowEdit}>Edit</Button>
+          <Button onClick={handleEdit}>Edit</Button>
+          <Button onClick={handleDelete}>Delete Event</Button>
             <CardMedia
               component="img"
               height="250"
-              image={eventimages ? eventimages[0].url : null}
+              image={""}
               alt={name}
               onClick={handleClick}
             />
             <CardContent>
               <Typography gutterBottom variant="h6" component="div">
                 {name}
-                
               </Typography>
               <Typography gutterBottom variant="h8" component="div">
                 {date}, {time}
@@ -75,3 +91,5 @@ function UserEventCard({event, handleShowEdit}){
     }
 
 export default UserEventCard
+
+// eventimages ? eventimages[0].url : null

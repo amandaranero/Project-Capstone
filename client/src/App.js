@@ -18,7 +18,7 @@ import Events from './components/Events'
 import Event from './components/Event'
 import UserEvents from './components/UserEvents';
 import MessageContainer from './components/MessageContainer';
-
+import EditEventForm from './components/EditEventForm';
 
 
 
@@ -47,6 +47,7 @@ function App() {
           <Route path ='/following' element={<Following />}/>
           <Route path = "/profile" element={<ProfilePage/>}/>
           <Route path='/messages' element={<MessageContainer/>}/>
+          <Route path='userevents/editeventform/:id' element={<EditEventForm/>}/>
           </Routes>
         </ProfileProvider>
     </div>

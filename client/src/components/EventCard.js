@@ -14,7 +14,6 @@ import styled from '@mui/system/styled';
 
 function EventCard({event}){
     const {name, description, date, time, eventimages, id} = event
-    const [eventImages, setEventImages] = useState([])
 
     const navigate = useNavigate()
 

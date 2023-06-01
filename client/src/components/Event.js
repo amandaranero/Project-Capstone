@@ -72,7 +72,6 @@ function Event(){
       navigate(`/users/${userid}`)
     }
 
-
     //returns id of all users for this event
     //bc users only like once then
     useEffect(()=>{
@@ -87,7 +86,8 @@ function Event(){
         })
     }, [id])
 
-    
+    //add a delete for when button is clicked
+    //follow what i did for the following/followers
 
     const add_like = {
         event_id: id
@@ -105,6 +105,7 @@ function Event(){
                 .then((totalLikes)=>{
                     setNumLikes(totalLikes)
                     setLikeStatus(!likeStatus)
+                    //setEventLikedtotheEvent..might need to send it back tho
                 })
             }
         })
@@ -132,7 +133,7 @@ function Event(){
             component="img"
             height="194"
             image={eventimage}
-            alt="Paella dish"
+            alt={event_name}
           />
           <CardContent>
             <Typography variant="body2" color="text.secondary">

@@ -2,6 +2,7 @@ import {useFormik} from 'formik'
 import * as yup from 'yup'
 import {useEffect, useState, useContext } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import Event from './Event'
 import { userEventContext } from '../UserEventProvider';
 import TextField from '@mui/material/TextField';
 import { Select, InputLabel, MenuItem, FormControl, Button } from "@mui/material"
@@ -15,14 +16,33 @@ function EditEventForm(){
 
     let {id} = useParams()
 
-    console.log(id)
+    const navigate = useNavigate()
 
+    const handleYourEvents = () =>{
+        navigate('/userevents')
+    }
+
+    const handleDelete = () =>{
+        fetch(`/userevents/${id}`,{
+            method:'DELETE'
+          }).then((resp)=>{
+            if(resp.ok){
+              resp.json()
+              .then((userEventData)=>{
+                setUserEvent(userEventData)
+                navigate('/userevents')
+              })
+            }
+    
+          })
+    }
+   
 
     const formSchema = yup.object().shape({
-        name: yup.string().required('Name is required'),
-        description: yup.string().required('Username is required'),
-        date: yup.string().required(),
-        time: yup.string().required(),
+        name: yup.string(),
+        description: yup.string(),
+        date: yup.string(),
+        time: yup.string(),
         public: yup.string(),
     })
 
@@ -38,20 +58,22 @@ function EditEventForm(){
         },
         validationSchema: formSchema,
         onSubmit: async (values, helpers)=>{
+            console.log("hi")
             const formData = new FormData()
             for (let value in values){
                 formData.append(value, values[value])
             }
             setLoading(true)
-            const resp = await fetch('/events', {
+            const resp = await fetch(`/userevents/${id}`, {
                 method: 'PATCH',
                 body: formData,
             })
             if (resp.ok){
                 const eventData = await resp.json()
                 setLoading(false)
-                setUserEvent([...userEvent, eventData])
-                // setUserEvent(eventData)
+                console.log(eventData)
+                setUserEvent(eventData)
+                navigate('/userevents')
                 helpers.resetForm()
             } else{
                 setLoading(false)
@@ -64,7 +86,9 @@ function EditEventForm(){
 
     return(
         <div>
-            <h1>Events</h1>
+            <Button onClick={handleYourEvents}>Your Events</Button>
+            <Event/>
+            <h1>Edit Event</h1>
                 <form onSubmit={formik.handleSubmit} encType='multipart/form-data'>
                 <div>
                 <TextField
@@ -158,6 +182,7 @@ function EditEventForm(){
                         <button type='submit'>Submit</button>  
                 </div>
             </form>
+            <Button onClick={handleDelete}>Delete Event</Button>
         </div>
     )
     }

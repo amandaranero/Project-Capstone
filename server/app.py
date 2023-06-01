@@ -178,7 +178,6 @@ api.add_resource(Users, '/users')
 class UserById(Resource):
     def get(self, id):
         user = User.query.filter_by(id=id).first()
-        print(user)
         
         if not user:
             return make_response(
@@ -203,7 +202,6 @@ class UserById(Resource):
         for attr in data:
             setattr(user, attr, data[attr])
 
-        print(user)
 
         db.session.add(user)
         db.session.commit()
@@ -243,67 +241,129 @@ class UserEvents(Resource):
             events, 200
         )
 
+    def post(self):
+        data = request.form
+        imagedata = request.files['image']
+        
+
+        try:
+            new_event = Event(
+                name = data['name'],
+                description = data['description'],
+                date = data['date'],
+                time = data['time'],
+                event_type = data['event_type'],
+                user_id = session['user_id']
+            )
+
+            db.session.add(new_event)
+            db.session.commit()
+
+            imagedata.filename = get_unique_filename(imagedata.filename)
+            image = upload_file_to_s3(imagedata)
+            print(image['url'])
+
+            photo = EventImage(
+                url = image['url'],
+                event_id = new_event.id
+            )
+
+            
+            db.session.add(photo)
+            db.session.commit()
+
+            return make_response(
+                new_event.to_dict(),
+                200
+            )
+
+        except:
+            user_id = session['user_id']
+            return make_response(
+                {'errors': 'nope'},
+                401
+            )
+
+
 api.add_resource(UserEvents, '/userevents')
 
-class Events(Resource):
+class UserEventsById(Resource):
+    def delete(self, id):
+        event_delete = Event.query.filter_by(id=id).first()
+        db.session.delete(event_delete)
+        db.session.commit()
 
-    def get(self):
-        events = [events.to_dict() for events in Event.query.all()]
+        user_events = Event.query.filter_by(user_id = session['user_id']).all()
+        events = [events.to_dict() for events in user_events]
+
+        return make_response(
+            events, 200
+        )
+
+    def patch(self, id):
+        event = Event.query.filter_by(id=id).first()
+        photo = db.session.query(EventImage).filter(EventImage.event_id==id).first()
+        print(photo)
+        data=request.form
+        imagedata = request.files['image']
+        
+        
+        if not event:
+            return make_response(
+                {'error':'event not found'}, 404
+            )
+        for attr in data:
+            setattr(event, attr, data[attr])
+
+
+        db.session.add(event)
+        db.session.commit()
+
+        imagedata.filename = get_unique_filename(imagedata.filename)
+        image = upload_file_to_s3(imagedata)
+        print(image)
+
+        for attr in image:
+            setattr(photo, attr, image[attr])
+
+
+        db.session.add(photo)
+        db.session.commit()
+
+
+        user_events = Event.query.filter_by(user_id = session['user_id']).all()
+        events = [events.to_dict() for events in user_events]
+
+        print(user_events)
+        print(events)
+
         
 
         return make_response(
             events,
             200
         )
-
-        if not events:
-            return make_response({
-                'error': 'no events found'
-            }, 400)
-
-    def post(self):
-        data = request.form
-        imagedata = request.files['image']
         
 
-        # try:
-        new_event = Event(
-            name = data['name'],
-            description = data['description'],
-            date = data['date'],
-            time = data['time'],
-            event_type = data['event_type'],
-            user_id = session['user_id']
-        )
 
-        db.session.add(new_event)
-        db.session.commit()
+api.add_resource(UserEventsById, '/userevents/<int:id>')
 
-        imagedata.filename = get_unique_filename(imagedata.filename)
-        image = upload_file_to_s3(imagedata)
-        print(image['url'])
+class Events(Resource):
 
-        photo = EventImage(
-            url = image['url'],
-            event_id = new_event.id
-        )
-
-        
-        db.session.add(photo)
-        db.session.commit()
+    def get(self):
+        events = [events for events in Event.query.all()]
+        events_t = Event.query.filter_by(event_type = "public").all()
+        events_type = [event.to_dict() for event in events_t]
 
         return make_response(
-            new_event.to_dict(),
+            events_type,
             200
         )
 
-        # except:
-        #     user_id = session['user_id']
-        #     return make_response(
-        #         {'errors': 'nope'},
-        #         401
-        #     )
-
+        if not events_type:
+            return make_response({
+                'error': 'no events found'
+            }, 400)
 
 
 api.add_resource(Events, '/events')
@@ -344,6 +404,7 @@ class EventsById(Resource):
         return make_response(
             event_object, 200
         )
+
 
 api.add_resource(EventsById, '/events/<int:id>')
 
