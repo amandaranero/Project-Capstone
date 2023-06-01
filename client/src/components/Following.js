@@ -10,7 +10,8 @@ import Avatar from '@mui/material/Avatar';
 
 
 function Following({followed}) {
-  const {name, username, userimage, id} = followed
+  const {name, username, userimages, id} = followed
+  console.log(followed)
   const navigate =  useNavigate()
 
   const handleUser = ()=>{
@@ -25,7 +26,7 @@ function Following({followed}) {
       <ListItem disablePadding >
         <ListItemButton onClick={handleUser}>
           <ListItemIcon>
-            <Avatar alt={name} src={userimage} />
+            <Avatar alt={name} src={userimages ? userimages[0].url : null} />
           </ListItemIcon>
           <ListItemText primary={name} primaryTypographyProps={{fontSize: '13px'}}/>
         </ListItemButton>

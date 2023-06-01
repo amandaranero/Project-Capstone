@@ -1,14 +1,37 @@
-import {useState} from 'react'
-// this is going to be a form that will be on a post
-// for stretch if time add emoji? is this possible? not sure...
+import {useState, useEffect} from 'react'
+import { useParams } from 'react-router-dom'
+import CommentContainer from './CommentContainer'
 
-function CommentForm({id}){
+
+function CommentForm(){
     const [comment, setComment] = useState('')
-    // const {id, name} = events
+    const [comments, setComments] = useState([])
+    const [comList, setComList] = useState([])
+    // const {content} = comList
+    let {id} = useParams()
+    // console.log(id)
+
+    console.log(comments)
+    
+
+    const commentsList = comments.map((c)=>(
+        <CommentContainer key={c.id} c={c}/>
+    ))
 
 
-    //might not be able to useFormik because of the initial values?
-    //post_id should not change
+    
+
+    useEffect(()=>{
+        fetch(`/comments/${id}`)
+        .then((resp)=>{
+            if(resp.ok){
+                resp.json()
+                .then((commentData)=>{
+                    setComments(commentData)
+                })
+            }
+        })
+    }, [id])
 
 
     //can change id based off card
@@ -18,6 +41,7 @@ function CommentForm({id}){
     }
 
     const handleSubmit = (e)=>{
+        console.log("hi")
         e.preventDefault()
         fetch('/comments', {
             method: 'POST',
@@ -30,7 +54,8 @@ function CommentForm({id}){
             if (resp.ok){
                 resp.json()
                 .then((commentData)=>{
-                    console.log(commentData)
+                    console.log(typeof commentData)
+                    setComments([...comments, commentData])
                 })
             }
         })
@@ -39,6 +64,10 @@ function CommentForm({id}){
 
     return(
         <div>
+            {commentsList}
+            <div>
+                <h2>{comList.content}</h2>
+            </div>
             <form onSubmit={handleSubmit}>
                 <textarea
                     className = "comment"
@@ -48,7 +77,6 @@ function CommentForm({id}){
                 />
                 <button type='submit'>Submit</button>
             </form>
-
         </div>
     )
 }

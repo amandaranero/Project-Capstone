@@ -104,7 +104,8 @@ class Profile(Resource):
                     'username': user.username,
                     'userimage': image.url,
                     'following' : following,
-                    'events':events
+                    'events':events,
+                    'id': session['user_id']
             }
 
             return make_response(
@@ -177,6 +178,7 @@ api.add_resource(Users, '/users')
 class UserById(Resource):
     def get(self, id):
         user = User.query.filter_by(id=id).first()
+        print(user)
         
         if not user:
             return make_response(
@@ -197,33 +199,37 @@ class UserById(Resource):
             return make_response({
                 'error': 'user not found'
             }, 404)
-        try:
-            for attr in data:
-                setattr(user, attr, data[attr])
+        # try:
+        for attr in data:
+            setattr(user, attr, data[attr])
 
-            db.session.add(user)
-            db.session.commit()
+        print(user)
 
-            imagedata.filename = get_unique_filename(imagedata.filename)
-            image = upload_file_to_s3(imagedata)
+        db.session.add(user)
+        db.session.commit()
 
-            print(image)
-            
-            for attr in image:
-                setattr(photo, attr, image[attr])
 
-            db.session.add(photo)
-            db.session.commit()
+        imagedata.filename = get_unique_filename(imagedata.filename)
+        image = upload_file_to_s3(imagedata)
+        print(image)
+        
+        for attr in image:
+            setattr(photo, attr, image[attr])
 
-            return make_response(
-                user.to_dict(),
-                200
-            )
+        db.session.add(photo)
+        db.session.commit()
+       
+        
 
-        except:
-            return({
-                'errors':'nope'}, 401
-            )
+        return make_response(
+            user.to_dict(),
+            200
+        )
+
+    # except:
+        return({
+            'errors':'nope'}, 401
+        )
 
 api.add_resource(UserById, "/users/<int:id>")
 
@@ -258,43 +264,45 @@ class Events(Resource):
     def post(self):
         data = request.form
         imagedata = request.files['image']
+        
 
-        try:
-            new_event = Event(
-                name = data['name'],
-                description = data['description'],
-                date = data['date'],
-                time = data['time'],
-                event_type = data['event_type'],
-                user_id = session['user_id']
-            )
-
-            db.session.add(new_event)
-            db.session.commit()
-
-            imagedata.filename = get_unique_filename(imagedata.filename)
-            image = upload_file_to_s3(imagedata)
-
-            photo = EventImage(
-                url = image['url'],
-                event_id = new_event.id
-            )
-
-            
-            db.session.add(photo)
-            db.session.commit()
-
-            return make_response(
-                new_event.to_dict(),
-                200
-            )
-
-        except:
+        # try:
+        new_event = Event(
+            name = data['name'],
+            description = data['description'],
+            date = data['date'],
+            time = data['time'],
+            event_type = data['event_type'],
             user_id = session['user_id']
-            return make_response(
-                {'errors': 'nope'},
-                401
-            )
+        )
+
+        db.session.add(new_event)
+        db.session.commit()
+
+        imagedata.filename = get_unique_filename(imagedata.filename)
+        image = upload_file_to_s3(imagedata)
+        print(image['url'])
+
+        photo = EventImage(
+            url = image['url'],
+            event_id = new_event.id
+        )
+
+        
+        db.session.add(photo)
+        db.session.commit()
+
+        return make_response(
+            new_event.to_dict(),
+            200
+        )
+
+        # except:
+        #     user_id = session['user_id']
+        #     return make_response(
+        #         {'errors': 'nope'},
+        #         401
+        #     )
 
 
 
@@ -303,6 +311,30 @@ api.add_resource(Events, '/events')
 class EventsById(Resource):
     def get(self, id):
         event = Event.query.filter_by(id=id).first()
+        userid = event.user_id
+        eventimage = EventImage.query.filter_by(event_id=id).first()
+        eventimageurl = eventimage.url
+        user = User.query.filter_by(id = userid).first()
+        userimage = UserImage.query.filter_by(user_id=userid).first()
+        userimageurl = userimage.url
+        username = user.username
+        event_name = event.name
+        description= event.description
+        date = event.date
+        time = event.time
+
+        event_object = {
+            # 'event': event.to_dict(),
+            'userid': userid,
+            'username': username,
+            'eventimage': eventimageurl,
+            'userimage': userimageurl,
+            'event_name': event_name,
+            'description':description,
+            'date': date,
+            'time': time
+        }
+
 
         if not event:
             return make_response({
@@ -310,7 +342,7 @@ class EventsById(Resource):
             }, 400)
 
         return make_response(
-            event.to_dict(), 200
+            event_object, 200
         )
 
 api.add_resource(EventsById, '/events/<int:id>')
@@ -339,12 +371,25 @@ class Comments(Resource):
                 event_id = data['event_id']
             )
 
+            userimage = UserImage.query.filter_by(user_id=session['user_id']).first()
+            imageurl = userimage.url
+            user = User.query.filter_by(id=session['user_id']).first()
+            username = user.username
 
             db.session.add(new_comment)
             db.session.commit()
 
+
+            comment_response = {
+                'content': data['content'],
+                'image': imageurl,
+                'id': new_comment.id,
+                'username': username
+            }
+
+
             return make_response(
-                new_comment.to_dict(),
+                comment_response,
                 200
         )
 
@@ -358,12 +403,24 @@ api.add_resource(Comments, '/comments')
 
 class CommentsById(Resource):
     def get(self, id):
-        comments = Comment.query.filter_by(event_id=id).all()
-        
-        content = [comment.content for comment in comments]
+        comment = Comment.query.filter_by(event_id=id).all()
+        userimage = UserImage.query.filter_by(user_id=session['user_id']).first()
+        imageurl = userimage.url
+        imagedict = {'image': imageurl}
 
+        comments = []
+        
+        for c in comment:
+            comment = c.to_dict(only=('content', 'id'))
+            user = User.query.filter_by(id = c.user_id).first()
+            user_name = {'username': user.username}
+            combined_comment = comment | imagedict
+            total_comment = user_name | combined_comment
+            comments.append(total_comment)
+
+       
         return make_response(
-            content, 200
+            comments, 200
         )
 
 api.add_resource(CommentsById, '/comments/<int:id>')
@@ -402,10 +459,68 @@ class Following(Resource):
 
 
         return make_response(
-            following.to_dict(only=('username', 'id')), 201
+            following.to_dict(), 201
         )
 
 api.add_resource(Following, '/following')
+
+class FollowingById(Resource):
+    def delete(self, id):
+        user = User.query.filter_by(id=session['user_id']).first()
+        following = User.query.filter_by(id=id).first()
+        user.followers.remove(following)
+        db.session.commit()
+
+        followings = [follow.to_dict() for follow in user.followers]
+
+        return make_response(
+            followings, 201
+        )
+
+        if not following:
+            return make_response(
+                {'error':'you are not following that user'}
+            )
+        
+api.add_resource(FollowingById, '/following/<int:id>')
+
+class FollowingEvents(Resource):
+    def get(self):
+        user = User.query.filter_by(id=session['user_id']).first()
+        
+        
+        # the ids of who the user is following
+        following_id = [follow.id for follow in user.followers]
+
+        events = []
+
+        for id in following_id:
+            event = Event.query.filter_by(user_id=id).first()
+            if event:
+                ev = event.to_dict()
+                image = event.eventimages
+                imageurl = [i.url for i in image]
+                im = {'image': imageurl}
+                combined = ev | im
+                user = User.query.filter_by(id=id).first()
+                username = user.username
+                user_name = {'username': username}
+                userphoto = user.userimages
+                url = [u.url for u in userphoto]
+                user_image = {'userimage': url}
+                combined_user = user_name | user_image
+                
+                combined_event = combined | combined_user
+            
+                events.append(combined_event)
+
+        return make_response(
+            events, 200
+        )
+
+
+api.add_resource(FollowingEvents, '/followingevents')
+
 
 class Followed(Resource):
     def get(self):
@@ -524,6 +639,25 @@ class LikesById(Resource):
         )
 
 api.add_resource(LikesById, '/likes/<int:id>')
+
+class LikeEvents(Resource):
+    def get(self):
+        user_likes = Like.query.filter_by(user_id=session['user_id']).all()
+        event_ids = [like.event_id for like in user_likes]
+
+
+        events = []
+
+        for id in event_ids:
+            event = Event.query.filter_by(id=id).first().to_dict()
+            events.append(event)
+
+        return make_response(
+            events, 200
+        )
+
+
+api.add_resource(LikeEvents, '/likevents')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { likesContext } from '../LikesProvider';
+import { likedEventsContext } from '../LikedEventsProvider';
 import { useParams } from 'react-router-dom'
 import CommentForm from './CommentForm'
 import { styled } from '@mui/material/styles';
@@ -13,9 +16,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Button } from '@mui/base';
 
 const ExpandMore = styled((props) => {
@@ -29,49 +30,50 @@ const ExpandMore = styled((props) => {
     }),
   }));
 
-  
-
 
 function Event(){
-    const [event, setEvent] = useState([])
-    // const [userLikes, setUserLikes] = useState([])
-    const [eventIds, setEventIds] = useState([])
-    const [comments, setComments] = useState([])
+    const [eventInfo, setEventInfo] = useState([])
+    const [eventIds] = useContext(likesContext)
     const [numLikes, setNumLikes] = useState([])
     const [likeStatus, setLikeStatus] = useState(true)
-    const [loading, setLoading] = useState(false)
     const [expanded, setExpanded] = useState(false);
-    const {name, description, date, time} = event
-
-    const handleExpandClick = () => {
-      setExpanded(!expanded);
-    };
-
+    const {description, username, event_name, userid, eventimage, userimage, date, time} = eventInfo
+    const [commentForm, setCommentForm] = useState(false)
 
     let {id} = useParams()
     const numId = Number(id)
-    useEffect(()=>{
-        fetch('/likes')
-        .then((resp)=>{
-            if(resp.ok){
-                resp.json()
-                .then((data)=>{
-                    setEventIds(data)
-                })
-            }
-        })
-    }, [])
+    const navigate = useNavigate()
+    
 
-    // getting weird glitch on refresh page, ugh
     useEffect(()=>{
-        if(loading){
-            if (eventIds.includes(numId)){
-                setLikeStatus(false)
-            }
-        }
-    })    
+      if(eventIds.includes(numId)){
+        setLikeStatus(false)
+      }
+    },[])
 
-    //returns id of users
+    useEffect(()=>{
+      fetch(`/events/${id}`)
+      .then((resp)=>{
+          if (resp.ok){
+              resp.json()
+              .then((eventData)=>{
+                  setEventInfo(eventData)
+              })
+          }
+      })
+  }, [id])
+
+  
+    const handleExpandClick = () => {
+      setExpanded(!expanded);
+    };  
+
+    const handleUser = ()=>{
+      navigate(`/users/${userid}`)
+    }
+
+
+    //returns id of all users for this event
     //bc users only like once then
     useEffect(()=>{
         fetch(`/likes/${id}`)
@@ -79,7 +81,6 @@ function Event(){
             if(resp.ok){
                 resp.json()
                 .then((likeData)=>{
-                    // setUserLikes(likeData)
                     setNumLikes(likeData.length)
                 })
             }
@@ -87,19 +88,6 @@ function Event(){
     }, [id])
 
     
-
-    useEffect(()=>{
-        fetch(`/events/${id}`)
-        .then((resp)=>{
-            if (resp.ok){
-                resp.json()
-                .then((eventData)=>{
-                    setEvent(eventData)
-                })
-            }
-        })
-    }, [id])
-
 
     const add_like = {
         event_id: id
@@ -123,42 +111,35 @@ function Event(){
     }
 
     function handleComment(){
-        <CommentForm id={id}/>
-        console.log("open")
+        setCommentForm(!commentForm)
     }
-
-    useEffect(()=>{
-        fetch(`/comments/${id}`)
-        .then((resp)=>{
-            if(resp.ok){
-                resp.json()
-                .then((commentData)=>{
-                    setComments(commentData)
-                })
-            }
-        })
-    }, [])
 
     return (
         <Card sx={{ maxWidth: 345 }}>
           <CardHeader
             avatar={
-              <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                {name}
+              <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe" src={userimage} 
+                    onClick={handleUser}>
+                
               </Avatar>
             }
-            title={name}
+            
+            // title={event}
             //need to put date and time in here
           />
+          {username}
           <CardMedia
             component="img"
             height="194"
-            image="https://media.npr.org/assets/img/2022/11/04/gettyimages-1183414292-1-_slide-edff8c3fe6afcab5c6457e3c7bd011f5c1745161-s1100-c50.jpg"
+            image={eventimage}
             alt="Paella dish"
           />
           <CardContent>
             <Typography variant="body2" color="text.secondary">
-                {description}
+              {event_name}
+              {description}
+              {date}
+              {time}
             </Typography>
           </CardContent>
           <CardActions disableSpacing>
@@ -180,9 +161,11 @@ function Event(){
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
-                {comments}
             </CardContent>
           </Collapse>
+          <div>
+          {commentForm ? <div> <CommentForm/></div> :null }
+          </div>
         </Card>
       );
 }

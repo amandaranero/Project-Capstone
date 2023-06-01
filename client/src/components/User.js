@@ -16,7 +16,6 @@ function User(){
     const [follow, setFollow] = useState({})
     const [messages, setMessages] = useState([])
     const [userProfile, setUserProfile] = useState([])
-    const [image, setImage] = useState([])
     const {bio, email, name, userimages, username} = userProfile
     const theme = useTheme();
     
@@ -28,14 +27,6 @@ function User(){
         .then((user)=> setUserProfile(user))
     }, [id])
 
-
-    //NOT FUCKING WORKING//
-    useEffect(()=>{
-        const images = userimages?.map((image)=>{
-            return image
-        })
-        setImage(images)
-    }, [userProfile])
 
     
     useEffect(()=>{
@@ -92,7 +83,7 @@ function User(){
       <CardMedia
         component="img"
         sx={{ width: 151 }}
-        // image={image ?  null : image.url} 
+        image={userimages ?  userimages[0].url : null} 
         alt={`${name}’s photo`}
       />
     </Card>

@@ -4,39 +4,38 @@ import * as yup from 'yup'
 import { useAuth0 } from "@auth0/auth0-react";
 import {useNavigate} from 'react-router-dom'
 import { usersContext } from "../UsersProvider"
+import { profileContext } from '../ProfileProvider';
 
 
 function UserForm(){
     const [loading, setLoading] = useState(false)
     const [users, setUsers] = useContext(usersContext)
+    const [profile, setProfile] = useContext(profileContext)
+    const {id, bio, name, username, userimage } = profile
     const {user} = useAuth0();
-    console.log(users)
-    console.log(user)
+    console.log(profile)
+    console.log(id)
 
     const navigate = useNavigate()
     
 
-        // FINDING EMAIL IN USER (AUTH0) IN USERS 
-        function findEmailID(useremail){
-            return useremail.email === user.email
+    const handleImage=(e)=>{
+        console.log("click")
+    }
+        const refreshPage = () => {
+            navigate(0);
         }
-        const myEmail = users.find(useremail=> findEmailID(useremail))
-        // //SETTING ID SO CAN FETCH THIS SPECIFIC USER
-        const id = myEmail.id
-
-
-    
 
     const formSchema = yup.object().shape({
-        name: yup.string().required('Name is required'),
-        username: yup.string().required('Username is required'),
-        bio: yup.string().required()
+        name: yup.string(),
+        username: yup.string(),
+        bio: yup.string()
     })
 
         const formik = useFormik({
             initialValues:{
                 name:'',
-                username:"",
+                username:'',
                 bio: '',
                 image: ''
             }, 
@@ -56,8 +55,10 @@ function UserForm(){
                     const userData = await resp.json()
                     setLoading(false)
                     console.log("passed", userData)
-                    helpers.resetForm()
+                    setProfile({...profile, userData})
                     navigate('/profile')
+                    helpers.resetForm()
+
                 }else{
                     setLoading(false)
                     console.log('failed')
@@ -87,7 +88,7 @@ function UserForm(){
                         name="username"
                         type = "text"
                         value={formik.values.username}
-                        onChange={formik.handleChange}
+                        onChange={formik.handleChange  }
                         onBlur={formik.handleBlur}
                         /> {formik.touched.username && formik.errors.username ? (
                             <div>{formik.errors.username}</div> ) :null}     

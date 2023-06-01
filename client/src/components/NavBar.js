@@ -32,11 +32,11 @@ function NavBar(){
                 <Link to ={'/'}>
                 <Button variant="outlined">Home</Button>
                 </Link>
-                <Link to ={'/profile'}>
-                <Button variant="outlined">Your Profile</Button>
-                </Link>
                 <Link to ={'/events'}>
                 <Button variant="outlined">Explore Events</Button>
+                </Link>
+                <Link to ={'/profile'}>
+                <Button variant="outlined">Your Profile</Button>
                 </Link>
                <LogoutButton/>
                </div>

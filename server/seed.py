@@ -23,23 +23,21 @@ def make_user():
         )
         users.append(user)
 
-        for user in users:
-            for _ in range(3):
-                user.followers.append(rc(users))
 
     db.session.add_all(users)
     db.session.commit()
 
 def make_userimages():
     UserImage.query.delete()
-    users = db.session.query(User.id).all()
+    # users = db.session.query(User.id).all()
 
-    images = []
+    users = [1,2,3,4,5,6,7,8,9,10]
+    images=[]
 
-    for _ in range(10):
+    for i in range(10):
         image = UserImage(
             url = "https://cdn.create.vista.com/api/media/small/579502666/stock-vector-light-blue-outline-user-avatar",
-            user_id = rc(users)[0]
+            user_id = (users)[i]
         )
 
         images.append(image)
@@ -71,18 +69,15 @@ def make_event():
 
 def make_eventimages():
     EventImage.query.delete()
-    events = db.session.query(Event.id).all()
+    # events = db.session.query(Event.id).all()
 
-    images = []
-    numbers = [1,2,3,4,5,6,7,8,9,10]
+    events = [1,2,3,4,5,6,7,8,9,10]
+    images=[]
 
-    pic = ["https://images.dog.ceo/breeds/deerhound-scottish/n02092002_6915.jpg",
-    'https://cdn.akc.org/content/hero/puppy_pictures_header.jpg', "https://images.dog.ceo/breeds/setter-irish/n02100877_2142.jpg","https://images.dog.ceo/breeds/hound-basset/n02088238_13683.jpg", "https://images.dog.ceo/breeds/corgi-cardigan/n02113186_1447.jpg",  "https://images.dog.ceo/breeds/airedale/n02096051_183.jpg", "https://images.dog.ceo/breeds/poodle-toy/n02113624_7964.jpg", "https://images.dog.ceo/breeds/terrier-silky/n02097658_6351.jpg", "https://images.dog.ceo/breeds/greyhound-italian/n02091032_4653.jpg"]
-
-    for _ in range(10):
+    for i in range(10):
         image = EventImage(
-            url = rc(pic),
-            event_id = rc(numbers)
+            url = "https://www.zarla.com/images/zarla-balloon-logos-4125x2768-2022112.jpeg?crop=21:16,smart&width=420&dpr=2",
+            event_id = (events)[i]
         )
 
         images.append(image)
@@ -93,24 +88,22 @@ def make_eventimages():
 def make_comment():
     Comment.query.delete()
 
-    users = db.session.query(User.id).all()
-    events = db.session.query(Event.id).all()
+    # users = db.session.query(User.id).all()
+    # events = db.session.query(Event.id).all()
 
-    comments = []
+    # comments = []
 
-    for _ in range(10):
-        comment = Comment(
-            content = fake.text(),
-            user_id = rc(users)[0],
-            event_id = rc(events)[0]
-        )
+    # for _ in range(10):
+    #     comment = Comment(
+    #         content = fake.text(),
+    #         user_id = rc(users)[0],
+    #         event_id = rc(events)[0]
+    #     )
         
-        comments.append(comment)
+    #     comments.append(comment)
 
-        db.session.add_all(comments)
-        db.session.commit()
-
-
+    #     db.session.add_all(comments)
+    db.session.commit()
 
 
 def make_message():
@@ -137,25 +130,10 @@ def make_message():
 
 def make_likes():
     Like.query.delete()
-    
-    users = db.session.query(User.id).all()
-    events = db.session.query(Event.id).all()
-
-    numbers = [1,2,3,4,5,6,7,8,9,10]
-
-    likes = []
-
-
-    for _ in range(10):
-        like = Like(
-            user_id = rc(users)[0],
-            event_id =rc(events)[0]
-        )
-
-    likes.append(like)
-
-    db.session.add_all(likes)
     db.session.commit()
+
+def delete_following():
+    table = db.session.query(follow).delete()
 
 
 

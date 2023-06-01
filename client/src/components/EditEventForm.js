@@ -1,17 +1,21 @@
 import {useFormik} from 'formik'
 import * as yup from 'yup'
 import {useEffect, useState, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { userEventContext } from '../UserEventProvider';
 import TextField from '@mui/material/TextField';
 import { Select, InputLabel, MenuItem, FormControl, Button } from "@mui/material"
 
 
 
-function EventForm(){
+function EditEventForm(){
     const [userEvent, setUserEvent] = useContext(userEventContext)
     const [loading, setLoading] = useState(false)
     const [event, setEvent] = useState({})
+
+    let {id} = useParams()
+
+    console.log(id)
 
 
     const formSchema = yup.object().shape({
@@ -40,7 +44,7 @@ function EventForm(){
             }
             setLoading(true)
             const resp = await fetch('/events', {
-                method: 'POST',
+                method: 'PATCH',
                 body: formData,
             })
             if (resp.ok){
@@ -158,6 +162,4 @@ function EventForm(){
     )
     }
 
-export default EventForm
-
-
+export default EditEventForm

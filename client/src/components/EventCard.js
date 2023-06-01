@@ -9,32 +9,16 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 import Box from '@mui/system/Box';
 import Grid from '@mui/system/Unstable_Grid';
 import styled from '@mui/system/styled';
-import { PropTypes } from "@mui/material";
 
-const Item = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  border: '1px solid',
-  borderColor: theme.palette.mode === 'dark' ? '#444d58' : '#ced7e0',
-  padding: theme.spacing(1),
-  borderRadius: '4px',
-  textAlign: 'center',
-}));
 
 
 function EventCard({event}){
-    const {name, description, date, time, eventimage, id} = event
+    const {name, description, date, time, eventimages, id} = event
     const [eventImages, setEventImages] = useState([])
 
     const navigate = useNavigate()
 
-    // useEffect(()=>{
-    //     const images = eventimages?.map((image)=>{
-    //         return image
-    //     })
-    //     setEventImages(images)
-    // }, [])
 
-    // console.log(eventImages)
 
 
     function handleClick(){

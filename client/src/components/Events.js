@@ -10,8 +10,8 @@ import Container from '@mui/material/Container';
 function Events(){
     const [events] = useContext(eventsContext)
 
-    const eventCards = events.map((event)=>(
-        <EventCard key={event.id} event={event}/>
+    const eventCards = events.map((e)=>(
+        <EventCard key={e.id} event={e}/>
     ))
 
     return(

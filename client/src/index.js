@@ -12,6 +12,10 @@ import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
 import ProfileProvider from './ProfileProvider';
 import UserEventProvider from './UserEventProvider';
+import LikesProvider from './LikesProvider';
+import LikedEventsProvider from './LikedEventsProvider';
+import FollowingEventsProvider from './FollowingEventsProvider';
+import FollowingProvider from './FollowingProvider';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -25,19 +29,26 @@ root.render(
         redirect_uri: "http://localhost:4000/"
       }}
     >   
-
-  <UserEventProvider>
-    <ProfileProvider>
-          <EventsProvider>
-            <UserProvider>
-              <ThemeProvider theme={theme}>
-                  <CssBaseline />
+      <FollowingProvider>
+      <FollowingEventsProvider>
+      <LikedEventsProvider>
+      <LikesProvider>
+      <UserEventProvider>
+      <ProfileProvider>
+      <EventsProvider>
+      <UserProvider>
+                  <ThemeProvider theme={theme}>
+                    <CssBaseline />
                   <App />
             </ThemeProvider>,
-        </UserProvider>
-        </EventsProvider>
-        </ProfileProvider>
-        </UserEventProvider>
+      </UserProvider>
+      </EventsProvider>
+      </ProfileProvider>
+      </UserEventProvider>
+      </LikesProvider>
+      </LikedEventsProvider>
+      </FollowingEventsProvider>
+      </FollowingProvider>
     </Auth0Provider>
 
   </BrowserRouter>

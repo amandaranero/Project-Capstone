@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react"
+import { useContext } from "react"
 import {Link, Navigate, useNavigate} from 'react-router-dom'
 import CommentForm from './CommentForm'
 import Card from '@mui/material/Card';
@@ -10,6 +10,9 @@ import Box from '@mui/system/Box';
 import Grid from '@mui/system/Unstable_Grid';
 import styled from '@mui/system/styled';
 import { PropTypes } from "@mui/material";
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Avatar from '@mui/material/Avatar';
+import ListItemText from '@mui/material/ListItemText';
 
 const Item = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -20,44 +23,43 @@ const Item = styled('div')(({ theme }) => ({
   textAlign: 'center',
 }));
 
-
-function UserEventCard({event, handleShowEdit}){
-    const {name, description, date, time, eventimages, id} = event
-    console.log(eventimages)
+function FollowingEvents({followevent}){
+    const {name, description, id, date, time, image, userimage, username, user_id} = followevent
 
     const navigate = useNavigate()
 
-
-
-    function handleClick(){
+    function handleEvent(){
         navigate(`/events/${id}`)
         return <CommentForm id={id}/>
     }
 
-    const handleEdit=()=>{
-      console.log("hi")
+    function handleUser(){
+      navigate(`/users/${user_id}`)
     }
+  
+ 
 
-
-    return (
-      <div style={{ width: '100%' }}>
+    return(
+        <div style={{ width: '100%' }}>
         <h3>  </h3>
         <Box sx={{ flexGrow: 1, display: 'flex',
         justifyContent: 'center' }}> 
       <Card sx={{ width: 425, height: 400 }}>
           <CardActionArea>
-          <Button onClick={handleShowEdit}>Edit</Button>
+          <ListItemIcon onClick={handleUser}>
+            <Avatar alt={name} src={userimage ? userimage[0] : null} />
+          </ListItemIcon>
+          <ListItemText primary={username} primaryTypographyProps={{fontSize: '13px'}}/>
             <CardMedia
               component="img"
               height="250"
-              image={eventimages ? eventimages[0].url : null}
+              image={image ? image[0] : null}
               alt={name}
-              onClick={handleClick}
+              onClick={handleEvent}
             />
             <CardContent>
               <Typography gutterBottom variant="h6" component="div">
                 {name}
-                
               </Typography>
               <Typography gutterBottom variant="h8" component="div">
                 {date}, {time}
@@ -71,7 +73,7 @@ function UserEventCard({event, handleShowEdit}){
 </Box>
 <h3>   </h3>
 </div>
-      );
-    }
+    )
+}
 
-export default UserEventCard
+export default FollowingEvents
