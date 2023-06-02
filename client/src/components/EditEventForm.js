@@ -3,6 +3,7 @@ import * as yup from 'yup'
 import {useEffect, useState, useContext } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Event from './Event'
+import Box from '@mui/material/Box'
 import { userEventContext } from '../UserEventProvider';
 import TextField from '@mui/material/TextField';
 import { Select, InputLabel, MenuItem, FormControl, Button } from "@mui/material"
@@ -86,7 +87,7 @@ function EditEventForm(){
 
     return(
         <div>
-            <Button onClick={handleYourEvents}>Your Events</Button>
+            <Button onClick={handleYourEvents} sx={{color:'black'}}>See All Your Events</Button>
             <Event/>
             <h1>Edit Event</h1>
                 <form onSubmit={formik.handleSubmit} encType='multipart/form-data'>
@@ -148,6 +149,7 @@ function EditEventForm(){
                     
                 <TextField      
                         select
+                        size='large'
                         label="Event Type"
                         name="event_type"
                         onChange = {formik.handleChange}
@@ -179,10 +181,10 @@ function EditEventForm(){
                         )}
                         /> 
                 </Button>
-                        <button type='submit'>Submit</button>  
+                        <Button type='submit' variant='outlined' sx={{color:'black'}}>Submit</Button>  
                 </div>
             </form>
-            <Button onClick={handleDelete}>Delete Event</Button>
+            <Button onClick={handleDelete} sx={{color:'black'}}>Delete Event</Button>
         </div>
     )
     }

@@ -15,7 +15,7 @@ function CommentContainer({c}){
             </Grid>
             <Grid justifyContent="left" item xs zeroMinWidth>
               <Typography  variant = "body2"
-              style={{ fontSize:12, margin: 0, textAlign: "left" }}>@{username}
+              style={{ fontSize:12, margin: 0, textAlign: "left" }}>{username}
               </Typography>
               <Typography variant = "body1"
              style={{ textAlign: "left" }}>

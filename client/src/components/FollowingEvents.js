@@ -65,17 +65,14 @@ function FollowingEvents({followevent}){
             time: {time}
           </Typography>
         </CardContent>
+        <Link to={`/events/${id}`}>
         <CardMedia
           component="img"
           height="250"
           image={image}
           alt={name}
         />
-         <CardContent>
-            <Typography variant="body2" >
-            {description}
-            </Typography>
-            </CardContent>
+        </Link>
           </Card>
           </Box>
         </Grid>

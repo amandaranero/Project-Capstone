@@ -1,15 +1,155 @@
-
-
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: "Karla", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fff;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-image: "https://www.zarla.com/images/zarla-balloon-logos-4125x2768-2022112.jpeg?crop=21:16,smart&width=420&dpr=2";
+  background-size: cover;
+  height: 70px;
+  padding: 0 20px;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+
+}
+.logo {
+  display: flex;
+  align-items: center;
+}
+.logo img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+.title {  /* Doogy Title */
+  font-size: 24px;
+  font-weight: bold;
+  color: rgb(245, 245, 245);
+  margin: 0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  margin-left: 10px;
+}
+
+nav a {
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 30px
+}
+
+nav button {  /* LogIn Button */
+  background-color: rgb(255, 255, 255);
+  border: none;
+  color: #000000;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+nav select {
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  color: #101010;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.right-links ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.right-links li {
+  margin-left: 30px;
+}
+.center {   /* Swipe Right And Create Account Buttons */
+  position: absolute;
+  top: 500%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.center h2 {
+  font-size: 90px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.center button {
+  background-color: #ff6c6c;
+  border: none;
+  color: rgb(255, 255, 255);
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 20px;
+}
+/* Styles for the legal-careers section */
+#legal-careers {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background-color: #000;
+  margin-top: -10px;
+}
+.legal, .careers, .social, .faq {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 20px;
+  padding: 20px;
+  text-align: center;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.legal h2, .careers h2, .social h2, .faq h2 {
+  margin: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+.legal a, .careers a, .social a, .faq a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+/* Remove underline from links */
+a {
+  text-decoration: none;
+}
+
+
+.dog-collection{
+  margin: 2rem
 }

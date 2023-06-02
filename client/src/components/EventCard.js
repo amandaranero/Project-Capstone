@@ -31,25 +31,27 @@ function EventCard({event}){
         <h3>  </h3>
         <Box sx={{ flexGrow: 1, display: 'flex',
         justifyContent: 'center', boxShadow:'none' }}> 
-      <Card sx={{ width: 425, height: 400 }}>
+      <Card sx={{ width: 425, height: 420 }}>
           <CardActionArea>
+            <Box sx={{pt:2}}>
+          <Typography gutterBottom variant="h6" component="div">
+                {name}
+              </Typography>
+              </Box>
+              <Box sx={{pt:0}}>
+              <Typography gutterBottom variant="h8" component="div">
+                Date: {date} ,  Time: {time}
+              </Typography>
+              </Box>
             <CardMedia
               component="img"
-              height="250"
+              height="350"
               image={eventimages ? eventimages[0].url : ""}
               alt={name}
               onClick={handleClick}
+              sx={{objectFit: 'contain'}}
             />
             <CardContent>
-              <Typography gutterBottom variant="h6" component="div">
-                {name}
-              </Typography>
-              <Typography gutterBottom variant="h8" component="div">
-                {date}, {time}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {description}
-              </Typography>
             </CardContent>
           </CardActionArea>
         </Card>

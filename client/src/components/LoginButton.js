@@ -67,7 +67,7 @@ const LoginButton = () => {
 
   return ( 
 
-   <Button variant="contained" sx={{ backgroundColor: '#fff9e7'  }} onClick={()=> loginWithRedirect()}>Log In</Button>
+   <Button variant="contained" sx={{ backgroundColor: '#fff9e7',  width: 200, padding: 1, margin: 2, boxShadow: 0   }} onClick={()=> loginWithRedirect()}>Log In</Button>
   )
 };
 

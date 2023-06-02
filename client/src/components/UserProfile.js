@@ -155,19 +155,25 @@ function UserProfile(){
                 columns={{ xs: 10, sm: 8, md: 12 }}
               >
               <Grid item xs={2} sm={4} md={4}>
-                    <User/>
+                <Box sx={{pt:2}}>
+                <User/>
+                </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-                    <Button onClick={handleFollows}>{followButton ? "Follow" : "UnFollow"}</Button>
+                    <Button size='large' sx={{color:'#4fc3f7'}} onClick={handleFollows}>{followButton ? "Follow" : "UnFollow"}</Button>
                     </Box>
                   </Grid>
                 <Grid item xs={7} sm={4} md={4}>
                     {profileEventList}
                 </Grid>
                 <Grid item xs={2} sm={4} md={4}>
-                    <Button variant='contained' onClick={handleShowFollowers}> Followers </Button>
+                    <Box sx={{pt:2}}>
+                    <Button variant='contained' size='large' onClick={handleShowFollowers}> Followers </Button>
                       {showFollowers ? followersList  : null } 
-                    <Button variant='contained' onClick={handleShowFollowing}> Following </Button>
+                      </Box>
+                      <Box sx={{pt:2}}>
+                    <Button variant='contained' size='large'onClick={handleShowFollowing}> Following </Button>
                       {showFollowing ? followingList : null } 
+                      </Box>
                 </Grid>
               </Grid>
               </Box>

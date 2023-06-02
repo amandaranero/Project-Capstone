@@ -135,7 +135,7 @@ function Event(){
         <Card sx={{ maxWidth: 400, height:500 }}>
           <Box sx={{ display:'flex'}}>
           <IconButton sx={{ p: 0, width: 80  }}>
-                <Avatar src={userimage} sx={{ width: 50, height: 40}}/>
+                <Avatar src={userimage} sx={{ width: 55, height: 50}}/>
               </IconButton>
               <Box sx={{pt: 1}}>
                 <Typography sx={{fontSize:14}}>
@@ -165,7 +165,7 @@ function Event(){
           </Typography>
             <IconButton  onClick = {handleLike} 
                     variant="contained"
-                    color = {likeStatus ? "#fb8c00" : "null"}>
+                    sx={{ bgcolor: likeStatus ? "null" : "#f06292" }}>
               <FavoriteBorderIcon/>
             </IconButton>
             <Button size="small" variant='contained' sx={{color:"#fb8c00"}} onClick ={handleComment}> Comments</Button>

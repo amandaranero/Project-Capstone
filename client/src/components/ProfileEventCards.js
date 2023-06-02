@@ -23,8 +23,7 @@ const Item = styled('div')(({ theme }) => ({
 
 
 function ProfileEventCards({event}){
-    const {name, description, date, time, eventimage, id} = event
-    // const [eventImages, setEventImages] = useState([])
+    const {name, description, date, time, eventimages, id} = event
 
     const navigate = useNavigate()
 
@@ -54,7 +53,7 @@ function ProfileEventCards({event}){
             <CardMedia
               component="img"
               height="250"
-              image={"https://media.npr.org/assets/img/2022/11/04/gettyimages-1183414292-1-_slide-edff8c3fe6afcab5c6457e3c7bd011f5c1745161-s1100-c50.jpg"}
+              image={eventimages ? eventimages[0].url : null}
               alt={name}
               onClick={handleClick}
             />

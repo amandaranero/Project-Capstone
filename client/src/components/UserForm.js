@@ -5,6 +5,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import {useNavigate} from 'react-router-dom'
 import { usersContext } from "../UsersProvider"
 import { profileContext } from '../ProfileProvider';
+import { TextField } from '@mui/material';
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 
 
 function UserForm(){
@@ -58,11 +61,12 @@ function UserForm(){
 
     return (
         <div>
-            <h1>form</h1>
+            <h1>Edit Your Profile</h1>
+            <Box>
             <form onSubmit={formik.handleSubmit} encType='multipart/form-data'>
                 <div>
-                    <label htmlFor = "name">Name</label>
-                    <input
+                    <TextField
+                        label="name"
                         id="name"
                         name="name"
                         value={formik.values.name}
@@ -72,8 +76,8 @@ function UserForm(){
                             <div>{formik.errors.name}</div> ) :null}     
                 </div>
                 <div>
-                    <label htmlFor = "username">Username</label>
-                    <input
+                <TextField
+                        label="username"
                         id="name"
                         name="username"
                         type = "text"
@@ -84,9 +88,8 @@ function UserForm(){
                             <div>{formik.errors.username}</div> ) :null}     
                 </div>
                 <div>
-                    <label htmlFor = "bio">Bio</label>
-                    <input
-                        id="name"
+                <TextField
+                        label="bio"
                         name="bio"
                         type = "text"
                         value={formik.values.bio}
@@ -96,17 +99,16 @@ function UserForm(){
                             <div>{formik.errors.bio}</div> ) :null}     
                 </div>
                 <div>
-                    <label htmlFor = "image">Upload Profile Picture</label>
-                    <input
-                        id="image"
+                    <TextField
                         name="image"
                         type = "file"
                         onChange={(e)=> formik.setFieldValue('image', e.currentTarget.files[0]
                         )}
                         /> {loading ? <p>Your photo is uploading</p>: null}  
-                        <button type='submit'>Submit</button>  
+                        <Button type='submit' variant='outlined' sx={{color:'#618833'}}>Submit</Button>  
                 </div>
             </form>
+            </Box>
         </div>
 
     )

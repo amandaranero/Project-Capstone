@@ -62,12 +62,12 @@ function UserEventCard({event}){
         justifyContent: 'center' }}> 
       <Card sx={{ width: 425, height: 400 }}>
           <CardActionArea>
-          <Button onClick={handleEdit}>Edit</Button>
-          <Button onClick={handleDelete}>Delete Event</Button>
+          <Button varaint='outlined' sx={{color:'#618833'}} onClick={handleEdit}>Edit</Button>
+          <Button varaint='outlined' sx={{color:'#618833'}} onClick={handleDelete}>Delete Event</Button>
             <CardMedia
               component="img"
               height="250"
-              image={""}
+              image={eventimages ? eventimages[0].url : null}
               alt={name}
               onClick={handleClick}
             />
@@ -91,5 +91,3 @@ function UserEventCard({event}){
     }
 
 export default UserEventCard
-
-// eventimages ? eventimages[0].url : null

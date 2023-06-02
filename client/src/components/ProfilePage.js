@@ -44,10 +44,19 @@ function ProfilePage(){
     const [followers] = useContext(followerContext)
     const [likedEvents] = useContext(likedEventsContext)
     const [followingEvents] = useContext(followingEventsContext)
+    const [showFollowers, setShowFollowers] = useState(true)
+    const [showFollowing, setShowFollowing] = useState(true)
     const [openEvents, setOpenEvents] = useState(true)
     const [anchorElUser, setAnchorElUser] = useState(null);
-    const [anchorElNav, setAnchorElNav] = useState(null);
     const navigate = useNavigate()
+
+    const handleFollowers = ()=>{
+      setShowFollowers(!showFollowers)
+    }
+
+    const handleFollowing = ()=>{
+      setShowFollowing(!showFollowing)
+    }
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -102,21 +111,23 @@ function ProfilePage(){
           <Grid item xs={12} >
                     <ThemeProvider theme={lightTheme}>
                         <Box
-                        sx={{
-                            p: 2,
-                            bgcolor: 'background.default',
+                        sx={{ pl:6, 
+                              pb:6,
                             display: 'grid',
                             gap: 2,
-                            height: 150
+                            height: 150,
                         }}
                         > 
-                            <Item  elevation={2} alignItems='center'>
                             <Toolbar>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 1, width: 70, margin: 2  }}>
-                <Avatar alt={name} src={userimage} sx={{ width: 56, height: 56}}/>
-              {name}
+              <Box sx={{pl:8, borderColor: 'black'}}>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 1, width: 70, margin: 2,}}>
+                <Avatar alt={name} src={userimage} sx={{ width: 100, height: 90}}/>
+              <Typography sx={{pl:2}} variant="h4">
+                {name}
+              </Typography>
               </IconButton>
+              </Box>
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}
@@ -141,30 +152,38 @@ function ProfilePage(){
               ))}
             </Menu>
         </Toolbar>
-            </Item>
               </Box>
             </ThemeProvider>
         </Grid>
-                      <Box justifyContent="center">
-                        Following
-                        {followingList}
+                      <Box sx={{pr:16}}>
+                        <Button variant="contained" onClick={handleFollowing}> Following</Button>
+                        <Box sx={{pl: 2, pt:2}}>
+                        {showFollowing ? followingList : null}
                         </Box>
-                       Followers
-                        {followerList}
+                       <Button variant="contained" onClick={handleFollowers}>Followers </Button>
+                       <Box sx={{pt:2, pl:2}}>
+                       {showFollowers ? followerList : null}
+                       </Box> 
+                       </Box>
                   </Grid>
                 <Grid item xs={6} sm={4} md={4}>
+                  <Box sx={{pt:2}}>
+                  <Typography sx={{color:'black', fontSize:26}}>
+                    Upcoming Events:
+                    </Typography>
                   {followingEventsList}
+                </Box>
                 </Grid>
                 <Grid item xs={4} sm={4} md={4} justifyContent="flext-start">
-                  <Box sx={{ paddingTop: 2 }}>
+                  <Box sx={{ paddingTop: 5}}>
                 <Link to={'/userevents'}>
                     <Button variant="contained"  size ='large' sx={{ backgroundColor: "pink"  }}>
                       Your Events
                     </Button>
                   </Link>
                   </Box>
-                  <Box sx={{ paddingTop: 2 }}>
-                    <Button variant="contained" size ='large' sx={{ backgroundColor: "pink"  }} onClick={handleEvents}>
+                  <Box sx={{ paddingTop: 4}}>
+                    <Button variant="contained" size ='large' sx={{ backgroundColor: "pink" }} onClick={handleEvents}>
                       {openEvents ? "Liked Events" : "Close Events"}
                     </Button>
                     </Box>

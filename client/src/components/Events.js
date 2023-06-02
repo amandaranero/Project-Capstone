@@ -15,7 +15,7 @@ function Events(){
     ))
 
     return(
-            <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+            <Box sx={{ flexGrow: 1, overflow: 'auto', pt:4 }} >
                 {eventCards}
             </Box>
     )
