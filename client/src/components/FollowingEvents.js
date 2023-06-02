@@ -12,7 +12,7 @@ import styled from '@mui/system/styled';
 import { PropTypes } from "@mui/material";
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Avatar from '@mui/material/Avatar';
-import ListItemText from '@mui/material/ListItemText';
+import IconButton from '@mui/material/IconButton';
 
 const Item = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -40,39 +40,47 @@ function FollowingEvents({followevent}){
  
 
     return(
-        <div style={{ width: '100%' }}>
-        <h3>  </h3>
-        <Box sx={{ flexGrow: 1, display: 'flex',
-        justifyContent: 'center' }}> 
+      <Box sx={{ flexGrow: 1 ,  display: 'flex',
+      justifyContent: 'center' }}>
+      <Grid container spacing={1}>
+      <Grid item xs={4} md={4}>
+        <Box sx={{pt:4}}>
       <Card sx={{ width: 425, height: 400 }}>
-          <CardActionArea>
-          <ListItemIcon onClick={handleUser}>
-            <Avatar alt={name} src={userimage ? userimage[0] : null} />
-          </ListItemIcon>
-          <ListItemText primary={username} primaryTypographyProps={{fontSize: '13px'}}/>
-            <CardMedia
-              component="img"
-              height="250"
-              image={image ? image[0] : null}
-              alt={name}
-              onClick={handleEvent}
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h6" component="div">
-                {name}
+        <Box sx={{ display:'flex'}}>
+        <IconButton onClick={handleUser} sx={{ p: 0, width: 80  }}>
+              <Avatar src={userimage} sx={{ width: 50, height: 40}}/>
+            </IconButton>
+            <Box sx={{pt: 1}}>
+              <Typography sx={{fontSize:14}}>
+                {username}
               </Typography>
-              <Typography gutterBottom variant="h8" component="div">
-                {date}, {time}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {description}
-              </Typography>
+            </Box>
+            </Box>
+          <CardContent>
+          <Typography>
+            Event Name: {name}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            date: {date} <h9> </h9>
+            time: {time}
+          </Typography>
+        </CardContent>
+        <CardMedia
+          component="img"
+          height="250"
+          image={image}
+          alt={name}
+        />
+         <CardContent>
+            <Typography variant="body2" >
+            {description}
+            </Typography>
             </CardContent>
-          </CardActionArea>
-        </Card>
-</Box>
-<h3>   </h3>
-</div>
+          </Card>
+          </Box>
+        </Grid>
+        </Grid>
+        </Box>
     )
 }
 

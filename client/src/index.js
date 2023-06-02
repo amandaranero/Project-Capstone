@@ -16,6 +16,7 @@ import LikesProvider from './LikesProvider';
 import LikedEventsProvider from './LikedEventsProvider';
 import FollowingEventsProvider from './FollowingEventsProvider';
 import FollowingProvider from './FollowingProvider';
+import FollowerProvider from './FollowersProvider';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -26,9 +27,10 @@ root.render(
       domain="dev-25w7agdwhg84ki1g.us.auth0.com"
       clientId="TJVpfRWiLNip9hWjrpGlAyoC1cpaKXvS"
       authorizationParams={{
-        redirect_uri: "http://localhost:4000/"
+        redirect_uri: "http://localhost:4000/profile"
       }}
     >   
+    <FollowerProvider>
       <FollowingProvider>
       <FollowingEventsProvider>
       <LikedEventsProvider>
@@ -49,6 +51,8 @@ root.render(
       </LikedEventsProvider>
       </FollowingEventsProvider>
       </FollowingProvider>
+      </FollowerProvider>
+
     </Auth0Provider>
 
   </BrowserRouter>

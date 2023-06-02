@@ -1,26 +1,21 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useNavigate } from "react-router-dom";
-import { usersContext } from "../UsersProvider";
+import { Navigate, redirect, useNavigate} from "react-router-dom";
+import { profileContext } from "../ProfileProvider";
 import Button from '@mui/material/Button';
 
 
 
 const LoginButton = () => {
   const {user, loginWithRedirect, getAccessTokenSilently, isAuthenticated} = useAuth0();
-  const {users} = useContext(usersContext)
+  const [profile, setProfile] = useContext(profileContext)
+  const [sessionUser, setSessionUser] = useState([])
 
-  const navigate = useNavigate()
-
-  function checkUsers(){
-    if (isAuthenticated){
-      navigate('/profile')
-    }}
-
+  
 
 //NEED TO REDIRECT TO USERFORM IF NEW. 
 //NOT WORKING WHERE I WANT IT TO...
-
+  //try fetching profile info on login
   
   useEffect(()=>{
     const getUserInfo = async (accessToken)=>{
@@ -38,7 +33,6 @@ const LoginButton = () => {
             email: userInfo.email,
             sub: userInfo.sub
           }
-          checkUsers()
           fetch('/users',{ 
             method: 'POST',
             headers:{
@@ -47,8 +41,8 @@ const LoginButton = () => {
             body: JSON.stringify(userData)
           })
           .then((resp) => resp.json())
-          .then((data)=>{
-            console.log("user added", data)
+          .then((d)=>{ setSessionUser(d)
+        
           })
           .catch((error)=>{
             console.log("Error adding", error)
@@ -70,13 +64,13 @@ const LoginButton = () => {
     fetchUserInfo()
   },[getAccessTokenSilently])
 
+
   return ( 
-   <Button variant="outlined" onClick={()=> loginWithRedirect()}>Log In</Button>
+
+   <Button variant="contained" sx={{ backgroundColor: '#fff9e7'  }} onClick={()=> loginWithRedirect()}>Log In</Button>
   )
 };
-//fetch request my front end
-// post that in my backend//
-//add it if they exist 
+
 
 
 

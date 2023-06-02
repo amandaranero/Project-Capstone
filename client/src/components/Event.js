@@ -14,10 +14,11 @@ import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Button } from '@mui/base';
+import Button  from '@mui/material/Button';
+import Box  from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -35,6 +36,7 @@ function Event(){
     const [eventInfo, setEventInfo] = useState([])
     const [eventIds] = useContext(likesContext)
     const [numLikes, setNumLikes] = useState([])
+    const [likedEvents, setLikedEvents] = useContext(likedEventsContext)
     const [likeStatus, setLikeStatus] = useState(true)
     const [expanded, setExpanded] = useState(false);
     const {description, username, event_name, userid, eventimage, userimage, date, time} = eventInfo
@@ -64,12 +66,9 @@ function Event(){
   }, [id])
 
   
-    const handleExpandClick = () => {
-      setExpanded(!expanded);
-    };  
 
     const handleUser = ()=>{
-      navigate(`/users/${userid}`)
+      navigate(`/users/${id}`)
     }
 
     //returns id of all users for this event
@@ -85,6 +84,17 @@ function Event(){
             }
         })
     }, [id])
+
+    // const handleUpdateLikedEvents = ()=>{
+    //   console.log("click")
+    //   if(likeStatus===false){
+    //     console.log("hi")
+    //     setLikedEvents((likedEvents)=>likedEvents.filter(event=>event.id !=id))
+    //     console.log(likedEvents)
+    //   }if(likeStatus=== true){
+    //     setLikedEvents(likedEvents.concat(eventInfo))
+    //   }
+    // }
 
     //add a delete for when button is clicked
     //follow what i did for the following/followers
@@ -105,7 +115,7 @@ function Event(){
                 .then((totalLikes)=>{
                     setNumLikes(totalLikes)
                     setLikeStatus(!likeStatus)
-                    //setEventLikedtotheEvent..might need to send it back tho
+                    // handleUpdateLikedEvents()
                 })
             }
         })
@@ -116,85 +126,69 @@ function Event(){
     }
 
     return (
-        <Card sx={{ maxWidth: 345 }}>
-          <CardHeader
-            avatar={
-              <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe" src={userimage} 
-                    onClick={handleUser}>
-                
-              </Avatar>
-            }
-            
-            // title={event}
-            //need to put date and time in here
-          />
-          {username}
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={1}>
+        <Grid item xs={2} md={4}>
+        </Grid>
+        <Grid item xs={4} md={4}>
+          <Box sx={{pt:4}}>
+        <Card sx={{ maxWidth: 400, height:500 }}>
+          <Box sx={{ display:'flex'}}>
+          <IconButton sx={{ p: 0, width: 80  }}>
+                <Avatar src={userimage} sx={{ width: 50, height: 40}}/>
+              </IconButton>
+              <Box sx={{pt: 1}}>
+                <Typography sx={{fontSize:14}}>
+                  {username}
+                </Typography>
+              </Box>
+              </Box>
+            <CardContent>
+            <Typography>
+              Event Name: {event_name}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              date: {date} <h9> </h9>
+              time: {time}
+            </Typography>
+          </CardContent>
           <CardMedia
             component="img"
-            height="194"
+            height="250"
             image={eventimage}
             alt={event_name}
           />
-          <CardContent>
-            <Typography variant="body2" color="text.secondary">
-              {event_name}
-              {description}
-              {date}
-              {time}
-            </Typography>
-          </CardContent>
+          <Box sx={{pt:1, pb:0}}>
           <CardActions disableSpacing>
-            <IconButton aria-label="add to favorites" onClick = {handleLike}>
-            {numLikes}
-              <FavoriteIcon /> 
-              {likeStatus ? 'Like' : 'Unlike'} 
+          <Typography>
+          {numLikes}
+          </Typography>
+            <IconButton  onClick = {handleLike} 
+                    variant="contained"
+                    color = {likeStatus ? "#fb8c00" : "null"}>
+              <FavoriteBorderIcon/>
             </IconButton>
-            <Button variant="outlined" onClick ={handleComment}> Add Comment</Button>
-            See comments
-            <ExpandMore
-              expand={expanded}
-              onClick={handleExpandClick}
-              aria-expanded={expanded}
-              aria-label="show more"
-            >
-              <ExpandMoreIcon />
-            </ExpandMore>
+            <Button size="small" variant='contained' sx={{color:"#fb8c00"}} onClick ={handleComment}> Comments</Button>
           </CardActions>
-          <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <CardContent>
+          </Box>
+          <CardContent>
+            <Typography variant="body2" >
+            {description}
+            </Typography>
             </CardContent>
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
           </Collapse>
-          <div>
-          {commentForm ? <div> <CommentForm/></div> :null }
-          </div>
-        </Card>
+          </Card>
+          </Box>
+        </Grid>
+        <Grid item xs={2} md={4}>
+          <Box sx={{pt:6}}>
+          {commentForm ? <CommentForm/> :null }
+          </Box>
+        </Grid>
+        </Grid>
+        </Box>
       );
 }
 
 export default Event
-
-// return(
-    //     <div>
-    //         <h2>{name}</h2>
-    //         <div>
-    //     <div className = 'card'>
-    //             {/* <img className='img' src={eventImages[0] ? eventImages[0].url : null} alt={`${name}’s photo`} /> */}
-    //         <div className = "title">
-    //             {name}
-    //         </div>
-    //         <div className = 'info'>
-    //             <span> {description}</span>
-    //         </div>
-    //     </div> 
-    //     <div>
-    //         <Button variant="outlined" onClick = {handleLike}>{likeStatus ? 'Like' : 'Unlike'}</Button>
-    //         {numLikes}
-    //     </div>
-    //     <Button variant="outlined" onClick ={handleComment}> Add Comment</Button>
-    //     <CommentForm id={id}/>
-    //     <div>
-    //         {comments}
-    //     </div>
-    //     </div>
-    //     </div>
-    // )

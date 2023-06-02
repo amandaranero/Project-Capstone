@@ -1,7 +1,10 @@
 import {useState, useEffect} from 'react'
 import { useParams } from 'react-router-dom'
 import CommentContainer from './CommentContainer'
-
+import Button  from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Card from '@mui/material/Card';
+import Box from '@mui/material/Box'
 
 function CommentForm(){
     const [comment, setComment] = useState('')
@@ -18,8 +21,6 @@ function CommentForm(){
         <CommentContainer key={c.id} c={c}/>
     ))
 
-
-    
 
     useEffect(()=>{
         fetch(`/comments/${id}`)
@@ -41,6 +42,7 @@ function CommentForm(){
     }
 
     const handleSubmit = (e)=>{
+        console.log("click")
         e.preventDefault()
         fetch('/comments', {
             method: 'POST',
@@ -55,6 +57,7 @@ function CommentForm(){
                 .then((commentData)=>{
                     console.log(typeof commentData)
                     setComments([...comments, commentData])
+                    setComment('')
                 })
             }
         })
@@ -62,21 +65,38 @@ function CommentForm(){
 }
 
     return(
+        <Card sx={{maxWidth: 340, height: 450}}>
+        <Box 
+            sx={{ mb: 2,
+          display: "flex",
+          flexDirection: "column",
+          height: 375,
+          overflow: "hidden",
+          overflowY: "scroll"}}
+          >
+        {commentsList}
         <div>
-            {commentsList}
-            <div>
-                <h2>{comList.content}</h2>
+            <h2>{comList.content}</h2>
             </div>
-            <form onSubmit={handleSubmit}>
-                <textarea
-                    className = "comment"
-                    value = {comment}
-                    onChange={(e)=> setComment(e.target.value)}
-                    placeholder='Add comment'
-                />
-                <button type='submit'>Submit</button>
-            </form>
-        </div>
+        </Box>
+        <Box>
+    <form onSubmit={handleSubmit}>
+        <TextField
+            variant = "outlined"
+            sx={{
+                color:'#932020',
+                pb: 1,
+            }}
+            label='Add comment'
+            type = "text"
+            value = {comment}
+            onChange={(e)=> setComment(e.target.value)}
+            
+        />
+        <Button   sx={{color:'#932020', pt:2, fontSize:15}} type='submit'>Submit</Button>
+    </form>
+    </Box>
+</Card>
     )
 }
 

@@ -9,22 +9,13 @@ import { profileContext } from '../ProfileProvider';
 
 function UserForm(){
     const [loading, setLoading] = useState(false)
-    const [users, setUsers] = useContext(usersContext)
     const [profile, setProfile] = useContext(profileContext)
-    const {id, bio, name, username, userimage } = profile
-    const {user} = useAuth0();
+    const {id} = profile
     console.log(profile)
     console.log(id)
 
     const navigate = useNavigate()
     
-
-    const handleImage=(e)=>{
-        console.log("click")
-    }
-        const refreshPage = () => {
-            navigate(0);
-        }
 
     const formSchema = yup.object().shape({
         name: yup.string(),
@@ -54,8 +45,7 @@ function UserForm(){
                 if (resp.ok){
                     const userData = await resp.json()
                     setLoading(false)
-                    console.log("passed", userData)
-                    setProfile({...profile, userData})
+                    setProfile(userData)
                     navigate('/profile')
                     helpers.resetForm()
 

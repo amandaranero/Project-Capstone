@@ -77,22 +77,16 @@ class Logout(Resource):
                 'message': 'No User logged in'
                 }, 204)
 
-        elif session.get('agency_id'):
-            session['agency_id'] = None
-
-            return make_response({
-                'message': 'No User logged in'
-                }, 204)
 
 api.add_resource(Logout, '/logout')
 
 class Profile(Resource):
     def get(self):
+        print(session.get('user_id'))
+        print("cat")
 
         user = User.query.filter_by(id=session['user_id']).first()
         image = UserImage.query.filter_by(user_id = session['user_id']).first()
-        # followers = [follow.to_dict() for follow in user.following]
-        following = [follow.to_dict() for follow in user.followers]
         userevents = Event.query.filter_by(user_id = session['user_id']).all()
         events = [events.to_dict() for events in userevents]
 
@@ -103,7 +97,6 @@ class Profile(Resource):
                     'bio':  user.bio,
                     'username': user.username,
                     'userimage': image.url,
-                    'following' : following,
                     'events':events,
                     'id': session['user_id']
             }
@@ -141,6 +134,13 @@ class Users(Resource):
 
         if user:
             session['user_id'] = user.id
+
+            user = User.query.filter_by(id=session['user_id']).first()
+
+            return make_response(
+                user.to_dict(),
+                200
+            )
         else:
             try: 
                 new_user = User(
@@ -162,11 +162,13 @@ class Users(Resource):
                 db.session.add(photo)
                 db.session.commit()
                 
+                session['user_id'] = new_user.id
+                session['user_id'] = user.id
 
                 return make_response(
                     new_user.to_dict(),200
                 )
-
+            
             except:
                 return make_response(
                     {'error': 'did not post user'}, 401
@@ -336,8 +338,6 @@ class UserEventsById(Resource):
 
         print(user_events)
         print(events)
-
-        
 
         return make_response(
             events,
@@ -542,6 +542,16 @@ class FollowingById(Resource):
             return make_response(
                 {'error':'you are not following that user'}
             )
+
+    def get(self, id):
+        user = User.query.filter_by(id=id).first()
+
+        followings = [follow.to_dict() for follow in user.followers]
+
+        return make_response(
+            followings, 201
+        )
+        
         
 api.add_resource(FollowingById, '/following/<int:id>')
 
@@ -583,22 +593,32 @@ class FollowingEvents(Resource):
 api.add_resource(FollowingEvents, '/followingevents')
 
 
-class Followed(Resource):
+class Followers(Resource):
     def get(self):
         user = User.query.filter_by(id=session['user_id']).first()
 
-        followers = [follow.username for follow in user.following]
+        followers = [follow.to_dict() for follow in user.following]
 
-        if not followers:
-            return make_response(
-                {'error': 'you have no followers'}
-            )
             
         return make_response(
             followers, 200
         )
 
-api.add_resource(Followed, '/followers')
+api.add_resource(Followers, '/followers')
+
+class FollowersById(Resource):
+    def get(self, id):
+        user = User.query.filter_by(id=id).first()
+        
+        followers = [follow.to_dict() for follow in user.following]
+        
+
+        
+        return make_response(
+            followers, 200
+        )
+
+api.add_resource(FollowersById, '/followers/<int:id>')
 
 class Messages(Resource):
     def post(self):
@@ -712,6 +732,8 @@ class LikeEvents(Resource):
         for id in event_ids:
             event = Event.query.filter_by(id=id).first().to_dict()
             events.append(event)
+        
+        print(events)
 
         return make_response(
             events, 200

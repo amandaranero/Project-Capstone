@@ -30,13 +30,13 @@ function EventCard({event}){
       <div style={{ width: '100%' }}>
         <h3>  </h3>
         <Box sx={{ flexGrow: 1, display: 'flex',
-        justifyContent: 'center' }}> 
+        justifyContent: 'center', boxShadow:'none' }}> 
       <Card sx={{ width: 425, height: 400 }}>
           <CardActionArea>
             <CardMedia
               component="img"
               height="250"
-              image={"https://media.npr.org/assets/img/2022/11/04/gettyimages-1183414292-1-_slide-edff8c3fe6afcab5c6457e3c7bd011f5c1745161-s1100-c50.jpg"}
+              image={eventimages ? eventimages[0].url : ""}
               alt={name}
               onClick={handleClick}
             />

@@ -8,16 +8,17 @@ const ProfileProvider = ({children})=>{
     const [profile, setProfile] = useState([])
 
     useEffect(()=>{
-        fetch('/profile')
-        .then((resp)=>{
-          if(resp.ok){
-            resp.json()
-            .then((profData)=>{
-              setProfile(profData)
-            })
-          }
-        })
-      },[])
+      fetch('/profile')
+      .then((resp)=>{
+        if(resp.ok){
+          resp.json()
+          .then((profData)=>{
+            setProfile(profData)
+          })
+        }
+      })
+    },[])
+
 
     return(
 

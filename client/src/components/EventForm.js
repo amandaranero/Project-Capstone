@@ -151,7 +151,7 @@ function EventForm(){
                         )}
                         /> 
                 </Button>
-                        <button type='submit'>Submit</button>  
+                        <Button type='submit'>Submit</Button>  
                 </div>
             </form>
         </div>

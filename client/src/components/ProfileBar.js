@@ -1,92 +1,69 @@
 import {useState, useContext} from 'react'
-import {useNavigate } from 'react-router-dom'
+import {useNavigate, Link } from 'react-router-dom'
+import { useAuth0 } from "@auth0/auth0-react";
 import { profileContext } from '../ProfileProvider';
+import LoginButton from './LoginButton';
+import LogoutButton from './LogoutButton';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
+import { Button } from '@mui/material';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
+import Grid from '@mui/material/Grid';
 
-const pages = ['Your Events'];
+
+const pages = ['Your Profile', 'Explore Events'];
 const settings = ['Edit Profile'];
 
+
+
 function ProfileBar() {
+  const {isAuthenticated} = useAuth0()
   const [profile] = useContext(profileContext)
-  const {name, username, userimage} = profile
-  const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const navigate = useNavigate()
+  const {name, username, userimage} = profile
 
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
 
-  const handleEditProfile = ()=>{
-    navigate('/userform')
-  }
 
-  return (
-    <AppBar position="static">
+
+  if(!isAuthenticated){
+    return(
+      <AppBar position="static" elevation={0}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={name} src={userimage} />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleEditProfile}>
-                  <Typography textAlign="center">{settings}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+          <Box sx={{ flexGrow: 0, boxShadow:'none' }}>
           </Box>
-          Hi {name}!
         </Toolbar>
+        <LoginButton/>   
+                <Link to ={'/events'}>
+                    <Button variant="contained" sx={{ backgroundColor: '#fff9e7'  }}>Explore Events</Button>
+                </Link> 
+      </Container>
+    </AppBar>
+    )
+  }
+  return (
+    <AppBar position="static">
+      <Container maxWidth="l" boxShadow={0} >
+          <Box boxShadow={0} sx={{justifyContent: 'flex-end', display:'flex', }}>
+          <Link to ={'/'}>
+                <Button variant="contained" sx={{ backgroundColor: '#fff9e7', width: 200, padding: 1, margin: 2, boxShadow: 0  }}>Home</Button>
+          </Link>
+          <Link to ={'/profile'}>
+                <Button variant="contained" sx={{ backgroundColor: '#fff9e7' ,  width: 200, padding: 1, margin: 2, boxShadow: 0  }}>Your Profile</Button>
+          </Link>
+          <Link to ={'/events'}>
+                <Button variant="contained" sx={{ backgroundColor: '#fff9e7' ,  width: 200, padding: 1, margin: 2, boxShadow: 0   }}>Explore Events</Button>
+          </Link>
+        <LogoutButton/>
+        </Box>
       </Container>
     </AppBar>
   );
 }
 export default ProfileBar;
 
-{/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-{pages.map((page) => (
-  <Button
-    key={page}
-    onClick={handleCloseNavMenu}
-    sx={{ my: 2, color: 'white', display: 'block' }}
-  >
-    {page}
-  </Button>
-))}
-</Box> */}

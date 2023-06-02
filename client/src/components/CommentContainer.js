@@ -1,23 +1,31 @@
-import { Divider, Avatar, Grid, Paper } from "@mui/material";
+import { Divider, Avatar, Grid, Paper, Card, Box } from "@mui/material";
+import Typography from '@mui/material/Typography';
 
 
 function CommentContainer({c}){
     const {content, image, username} = c
 
     return(
+      <Box sx={{ flexWrap: 'wrap', pl:1, pr:1, pb:0.1}}>
+      <Card sx={{pl:2,maxWidth: 350, height:70, }}>
         <div style={{padding: 14}}>
-          <Grid container wrap="nowrap" spacing={2}>
+          <Grid container spacing={2}>
             <Grid item>
               <Avatar alt="{username}" src={image} />
             </Grid>
             <Grid justifyContent="left" item xs zeroMinWidth>
-              <h4 style={{ margin: 0, textAlign: "left" }}>@{username}</h4>
-              <p style={{ textAlign: "left" }}>
+              <Typography  variant = "body2"
+              style={{ fontSize:12, margin: 0, textAlign: "left" }}>@{username}
+              </Typography>
+              <Typography variant = "body1"
+             style={{ textAlign: "left" }}>
                 {content}
-              </p>
+                </Typography>
             </Grid>
           </Grid>
         </div>
+      </Card>
+      </Box>
     )
 }
 
