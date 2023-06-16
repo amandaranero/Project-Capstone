@@ -1,7 +1,6 @@
 {
     "builds": [
         {
-            "src": "../server/app.py",
             "use": "@vercel/python"
         }
     ],
@@ -12,3 +11,4 @@
         }
     ]
 }
+
