@@ -27,7 +27,7 @@ root.render(
       domain="dev-25w7agdwhg84ki1g.us.auth0.com"
       clientId="TJVpfRWiLNip9hWjrpGlAyoC1cpaKXvS"
       authorizationParams={{
-        redirect_uri: "http://localhost:4000/profile"
+        redirect_uri: "https://party-hat.vercel.app"
       }}
     >   
     <FollowerProvider>
